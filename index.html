@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fat Cat Fest</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffcc33, #ff9966);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #5a3a1e;
+        }
+        
+        .game-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            border: 10px solid #ff9966;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #ff9966, #ffcc33);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 8px solid #5a3a1e;
+        }
+        
+        .header h1 {
+            font-size: 3.5rem;
+            color: #5a3a1e;
+            text-shadow: 3px 3px 0 #ffcc33;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            color: #5a3a1e;
+            font-style: italic;
+        }
+        
+        .content {
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        /* Main Menu Styles */
+        .main-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            gap: 20px;
+        }
+        
+        .menu-title {
+            font-size: 2.5rem;
+            color: #ff9966;
+            margin-bottom: 30px;
+            text-align: center;
+            text-shadow: 2px 2px 0 #5a3a1e;
+        }
+        
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .menu-btn {
+            background: linear-gradient(to right, #ff9966, #ffcc33);
+            border: none;
+            padding: 20px;
+            font-size: 1.8rem;
+            border-radius: 15px;
+            cursor: pointer;
+            color: #5a3a1e;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 5px 0 #5a3a1e;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .menu-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 0 #5a3a1e;
+        }
+        
+        .menu-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 3px 0 #5a3a1e;
+        }
+        
+        .menu-btn i {
+            font-size: 1.5rem;
+        }
+        
+        .support-section {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #fff9e6;
+            border-radius: 15px;
+            border: 5px dashed #ff9966;
+            text-align: center;
+        }
+        
+        .support-btn {
+            background: linear-gradient(to right, #ff3366, #ff9966);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            margin-top: 15px;
+            box-shadow: 0 5px 0 #5a3a1e;
+            transition: all 0.2s;
+        }
+        
+        .support-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 0 #5a3a1e;
+        }
+        
+        /* Game Screen Styles */
+        .game-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .screen-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #ff9966;
+        }
+        
+        .back-btn {
+            background: #ff9966;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #5a3a1e;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 1.2rem;
+        }
+        
+        .stat {
+            background: #fff9e6;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 2px solid #ffcc33;
+        }
+        
+        .game-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+        }
+        
+        .cat-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .cat {
+            font-size: 12rem;
+            cursor: pointer;
+            transition: transform 0.1s;
+            user-select: none;
+        }
+        
+        .cat:active {
+            transform: scale(0.9);
+        }
+        
+        .click-instruction {
+            font-size: 1.5rem;
+            color: #ff3366;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .cats-collected {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .collected-cat {
+            font-size: 3rem;
+            opacity: 0.7;
+        }
+        
+        .collected-cat.active {
+            opacity: 1;
+            animation: pop 0.3s;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Options and Credits Screens */
+        .options-screen, .credits-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .options-list, .credits-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .option-item, .credit-item {
+            background: #fff9e6;
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 8px solid #ff9966;
+        }
+        
+        .option-title, .credit-title {
+            font-size: 1.5rem;
+            color: #ff9966;
+            margin-bottom: 10px;
+        }
+        
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .slider {
+            flex-grow: 1;
+            height: 20px;
+            -webkit-appearance: none;
+            background: #ffcc33;
+            border-radius: 10px;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 30px;
+            height: 30px;
+            background: #ff3366;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #5a3a1e;
+            color: #ffcc33;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .menu-btn {
+                font-size: 1.5rem;
+                padding: 15px;
+            }
+            
+            .cat-container {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .cat {
+                font-size: 10rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>Fat Cat Fest</h1>
+            <p>Collect all the chonky cats!</p>
+        </div>
+        
+        <div class="content">
+            <!-- Main Menu -->
+            <div class="main-menu" id="main-menu">
+                <h2 class="menu-title">Main Menu</h2>
+                <div class="menu-options">
+                    <button class="menu-btn" id="play-btn">
+                        <span>Play</span>
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="menu-btn" id="options-btn">
+                        <span>Options</span>
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="menu-btn" id="credits-btn">
+                        <span>Credits</span>
+                        <i class="fas fa-info-circle"></i>
+                    </button>
+                    <button class="menu-btn" id="exit-btn">
+                        <span>Exit</span>
+                        <i class="fas fa-door-open"></i>
+                    </button>
+                </div>
+                
+                <div class="support-section">
+                    <h3>Enjoying the game?</h3>
+                    <p>Support further development of Fat Cat Fest!</p>
+                    <button class="support-btn" id="support-btn">
+                        <i class="fas fa-heart"></i> Support This Game
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Game Screen -->
+            <div class="game-screen" id="game-screen">
+                <div class="screen-header">
+                    <button class="back-btn" id="back-from-game">
+                        <i class="fas fa-arrow-left"></i> Back to Menu
+                    </button>
+                    <div class="stats">
+                        <div class="stat">Cats: <span id="cat-count">0</span></div>
+                        <div class="stat">Clicks: <span id="click-count">0</span></div>
+                    </div>
+                </div>
+                
+                <div class="game-area">
+                    <div class="cat-container">
+                        <div class="cat" id="main-cat">😺</div>
+                    </div>
+                    
+                    <p class="click-instruction">Click the cat to collect it!</p>
+                    
+                    <div class="cats-collected" id="cats-collected">
+                        <!-- Collected cats will appear here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Options Screen -->
+            <div class="options-screen" id="options-screen">
+                <div class="screen-header">
+                    <button class="back-btn" id="back-from-options">
+                        <i class="fas fa-arrow-left"></i> Back to Menu
+                    </button>
+                    <h2>Options</h2>
+                </div>
+                
+                <div class="options-list">
+                    <div class="option-item">
+                        <div class="option-title">Sound Volume</div>
+                        <div class="slider-container">
+                            <span>Off</span>
+                            <input type="range" min="0" max="100" value="50" class="slider" id="sound-slider">
+                            <span>Max</span>
+                        </div>
+                    </div>
+                    
+                    <div class="option-item">
+                        <div class="option-title">Cat Size</div>
+                        <div class="slider-container">
+                            <span>Small</span>
+                            <input type="range" min="50" max="150" value="100" class="slider" id="size-slider">
+                            <span>Large</span>
+                        </div>
+                    </div>
+                    
+                    <div class="option-item">
+                        <div class="option-title">Game Difficulty</div>
+                        <div class="slider-container">
+                            <span>Easy</span>
+                            <input type="range" min="1" max="3" value="1" class="slider" id="difficulty-slider">
+                            <span>Hard</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Credits Screen -->
+            <div class="credits-screen" id="credits-screen">
+                <div class="screen-header">
+                    <button class="back-btn" id="back-from-credits">
+                        <i class="fas fa-arrow-left"></i> Back to Menu
+                    </button>
+                    <h2>Credits</h2>
+                </div>
+                
+                <div class="credits-list">
+                    <div class="credit-item">
+                        <div class="credit-title">Game Design & Development</div>
+                        <p>Fat Cat Studios</p>
+                    </div>
+                    
+                    <div class="credit-item">
+                        <div class="credit-title">Lead Cat Designer</div>
+                        <p>Whiskers McGee</p>
+                    </div>
+                    
+                    <div class="credit-item">
+                        <div class="credit-title">Sound Effects</div>
+                        <p>Meow Mix Orchestra</p>
+                    </div>
+                    
+                    <div class="credit-item">
+                        <div class="credit-title">Special Thanks</div>
+                        <p>All the chonky cats of the world</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Fat Cat Fest &copy; 2023 | A game for cat lovers everywhere</p>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const gameState = {
+            catsCollected: 0,
+            totalClicks: 0,
+            catEmojis: ['😺', '😸', '😹', '😻', '😼', '😽', '🙀', '😿', '😾'],
+            collectedEmojis: [],
+            isPlaying: false
+        };
+        
+        // DOM elements
+        const mainMenu = document.getElementById('main-menu');
+        const gameScreen = document.getElementById('game-screen');
+        const optionsScreen = document.getElementById('options-screen');
+        const creditsScreen = document.getElementById('credits-screen');
+        
+        const playBtn = document.getElementById('play-btn');
+        const optionsBtn = document.getElementById('options-btn');
+        const creditsBtn = document.getElementById('credits-btn');
+        const exitBtn = document.getElementById('exit-btn');
+        const supportBtn = document.getElementById('support-btn');
+        
+        const backFromGameBtn = document.getElementById('back-from-game');
+        const backFromOptionsBtn = document.getElementById('back-from-options');
+        const backFromCreditsBtn = document.getElementById('back-from-credits');
+        
+        const mainCat = document.getElementById('main-cat');
+        const catCount = document.getElementById('cat-count');
+        const clickCount = document.getElementById('click-count');
+        const catsCollectedContainer = document.getElementById('cats-collected');
+        
+        const soundSlider = document.getElementById('sound-slider');
+        const sizeSlider = document.getElementById('size-slider');
+        const difficultySlider = document.getElementById('difficulty-slider');
+        
+        // Initialize the game
+        function initGame() {
+            // Setup event listeners for menu buttons
+            playBtn.addEventListener('click', showGameScreen);
+            optionsBtn.addEventListener('click', showOptionsScreen);
+            creditsBtn.addEventListener('click', showCreditsScreen);
+            exitBtn.addEventListener('click', exitGame);
+            supportBtn.addEventListener('click', supportGame);
+            
+            // Setup event listeners for back buttons
+            backFromGameBtn.addEventListener('click', showMainMenu);
+            backFromOptionsBtn.addEventListener('click', showMainMenu);
+            backFromCreditsBtn.addEventListener('click', showMainMenu);
+            
+            // Setup game cat click event
+            mainCat.addEventListener('click', collectCat);
+            
+            // Setup option sliders
+            soundSlider.addEventListener('input', updateSound);
+            sizeSlider.addEventListener('input', updateCatSize);
+            difficultySlider.addEventListener('input', updateDifficulty);
+            
+            // Initialize cats collected display
+            updateCatsCollectedDisplay();
+        }
+        
+        // Screen navigation functions
+        function showMainMenu() {
+            mainMenu.style.display = 'flex';
+            gameScreen.style.display = 'none';
+            optionsScreen.style.display = 'none';
+            creditsScreen.style.display = 'none';
+        }
+        
+        function showGameScreen() {
+            mainMenu.style.display = 'none';
+            gameScreen.style.display = 'flex';
+            optionsScreen.style.display = 'none';
+            creditsScreen.style.display = 'none';
+            
+            // Reset game if not already playing
+            if (!gameState.isPlaying) {
+                gameState.catsCollected = 0;
+                gameState.totalClicks = 0;
+                gameState.collectedEmojis = [];
+                updateGameStats();
+                updateCatsCollectedDisplay();
+                gameState.isPlaying = true;
+            }
+        }
+        
+        function showOptionsScreen() {
+            mainMenu.style.display = 'none';
+            gameScreen.style.display = 'none';
+            optionsScreen.style.display = 'flex';
+            creditsScreen.style.display = 'none';
+        }
+        
+        function showCreditsScreen() {
+            mainMenu.style.display = 'none';
+            gameScreen.style.display = 'none';
+            optionsScreen.style.display = 'none';
+            creditsScreen.style.display = 'flex';
+        }
+        
+        // Game logic functions
+        function collectCat() {
+            gameState.totalClicks++;
+            
+            // Determine if a cat is collected based on difficulty
+            const difficulty = parseInt(difficultySlider.value);
+            const collectionChance = 0.7 - (difficulty - 1) * 0.2; // 70% for easy, 50% for medium, 30% for hard
+            
+            if (Math.random() < collectionChance && gameState.collectedEmojis.length < gameState.catEmojis.length) {
+                gameState.catsCollected++;
+                
+                // Find a cat emoji we haven't collected yet
+                const availableEmojis = gameState.catEmojis.filter(emoji => !gameState.collectedEmojis.includes(emoji));
+                const collectedEmoji = availableEmojis[Math.floor(Math.random() * availableEmojis.length)];
+                
+                gameState.collectedEmojis.push(collectedEmoji);
+                
+                // Change the main cat to a new random emoji
+                mainCat.textContent = gameState.catEmojis[Math.floor(Math.random() * gameState.catEmojis.length)];
+                
+                // Update displays
+                updateGameStats();
+                updateCatsCollectedDisplay();
+                
+                // Show collection animation
+                const newCatElement = document.querySelector(`.collected-cat[data-emoji="${collectedEmoji}"]`);
+                newCatElement.classList.add('active');
+                setTimeout(() => {
+                    newCatElement.classList.remove('active');
+                }, 300);
+            }
+            
+            // Update click count regardless of collection
+            updateGameStats();
+        }
+        
+        function updateGameStats() {
+            catCount.textContent = gameState.catsCollected;
+            clickCount.textContent = gameState.totalClicks;
+        }
+        
+        function updateCatsCollectedDisplay() {
+            catsCollectedContainer.innerHTML = '';
+            
+            gameState.catEmojis.forEach(emoji => {
+                const catElement = document.createElement('div');
+                catElement.className = 'collected-cat';
+                catElement.textContent = emoji;
+                catElement.setAttribute('data-emoji', emoji);
+                
+                if (gameState.collectedEmojis.includes(emoji)) {
+                    catElement.style.opacity = '1';
+                } else {
+                    catElement.style.opacity = '0.3';
+                }
+                
+                catsCollectedContainer.appendChild(catElement);
+            });
+        }
+        
+        // Options functions
+        function updateSound() {
+            // In a real game, this would adjust the volume of game sounds
+            console.log(`Sound volume set to: ${soundSlider.value}%`);
+        }
+        
+        function updateCatSize() {
+            const size = parseInt(sizeSlider.value);
+            mainCat.style.fontSize = `${size * 1.2}px`;
+        }
+        
+        function updateDifficulty() {
+            const difficulty = parseInt(difficultySlider.value);
+            const difficultyText = ['Easy', 'Medium', 'Hard'][difficulty - 1];
+            console.log(`Difficulty set to: ${difficultyText}`);
+        }
+        
+        // Other button functions
+        function supportGame() {
+            alert('Thank you for your support! 🐱\n\nIn a real game, this would redirect to a support page.');
+        }
+        
+        function exitGame() {
+            if (confirm('Are you sure you want to exit Fat Cat Fest?')) {
+                alert('Thanks for playing! Come back soon for more cat collecting!');
+                // In a real implementation, this might close the window or redirect
+            }
+        }
+        
+        // Initialize the game when the page loads
+        window.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
