@@ -8,6 +8,22 @@
     <link rel="stylesheet" href="/Game/css/style.css">
 </head>
 <body>
+
+     <!-- Curtain Transition Effect -->
+    <div class="curtain-overlay" id="curtainOverlay">
+        <div class="curtain-panel left" id="curtainTop">
+            <div class="curtain-fold"></div>
+        </div>
+        <div class="curtain-panel right" id="curtainBottom">
+            <div class="curtain-fold"></div>
+            <div class="curtain-shimmer"></div>
+            <div class="curtain-tassel"></div>
+        </div>
+        <div class="curtain-spinner" id="curtainSpinner"></div>
+    </div>
+
+
+<div class="page-content" id="pageContent">
     <div class="game-container">
         <div class="header">
             <h1>Fat Cat Fest</h1>
@@ -37,13 +53,7 @@
                     </button>
                 </div>
                 
-                <div class="support-section">
-                    <h3>Enjoying the game?</h3>
-                    <p>Support further development of Fat Cat Fest!</p>
-                    <button class="support-btn" id="support-btn">
-                        <i class="fas fa-heart"></i> Support This Game
-                    </button>
-                </div>
+                
             </div>
             
             <!-- Game Screen -->
@@ -60,6 +70,11 @@
                 </div>
                 
                 <div class="game-area">
+                    <!-- In the game-area div, replace the cat emoji with this: -->
+                        <div class="cat-container">
+                            <img src="cat-normal.png" id="cat-image" class="cat" alt="Fat Cat">
+                        </div>
+                       
                     <!-- Arrow Treadmill Display -->
                     <div class="sequence-display" id="sequence-display">
                         <!-- Sequence arrows will appear here -->
@@ -175,11 +190,9 @@
             </div>
         </div>
         
-        <div class="footer">
-            <p>Fat Cat Fest &copy; 2023 | Arrow Sequence Challenge</p>
-        </div>
+        
     </div>
-
+</div>
     <script src="/Game/js/game.js"></script>
 </body>
 </html>

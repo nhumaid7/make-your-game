@@ -8,40 +8,56 @@
 body {
     background: linear-gradient(135deg, #ffcc33, #ff9966);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
+    display: flex ;
+    justify-content: center ;
     align-items: center;
     padding: 20px;
     color: #5a3a1e;
 }
-
-.game-container {
-    width: 100%;
-    max-width: 900px;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 25px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    border: 10px solid #ff9966;
+/* Main background for the whole page */
+body {
+    background-image: url('/Game/images/mainBckground\ .jpg'); /* Adjust path */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
 }
 
+/* Make game container semi-transparent */
+.game-container {
+    width: 100%;
+    height: 100%;
+    max-width: 900px;
+    background-color: rgba(255, 255, 255, 0.85); /* 85% opaque white */
+    backdrop-filter: blur(5px); /* Optional: adds blur effect to background */
+    border-radius: 25px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    border: 5px solid #ff9966;
+    margin: 0 auto;
+}
+
+/* Optional: Add a subtle pattern overlay to the header */
 .header {
-    background: linear-gradient(to right, #ff9966, #ffcc33);
-    padding: 25px;
+    background: linear-gradient(to right, rgba(255, 153, 102, 0.9), rgba(255, 204, 51, 0.9));
+    padding: 10px;
     text-align: center;
     border-bottom: 8px solid #5a3a1e;
+    backdrop-filter: blur(3px);
 }
 
 .header h1 {
-    font-size: 3.5rem;
-    color: #5a3a1e;
+    font-size: 1.5rem;
+    color: #938f99;
     text-shadow: 3px 3px 0 #ffcc33;
     letter-spacing: 2px;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
 }
 
 .header p {
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: #5a3a1e;
     font-style: italic;
 }
@@ -49,7 +65,7 @@ body {
 .content {
     display: flex;
     flex-direction: column;
-    padding: 30px;
+    padding: 20px;
     min-height: 600px;
 }
 
@@ -57,16 +73,16 @@ body {
 .main-menu {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center ;
     justify-content: center;
     flex-grow: 1;
     gap: 20px;
 }
 
 .menu-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
     color: #ff9966;
-    margin-bottom: 30px;
+    padding: 3px;
     text-align: center;
     text-shadow: 2px 2px 0 #5a3a1e;
 }
@@ -110,33 +126,6 @@ body {
     font-size: 1.5rem;
 }
 
-.support-section {
-    margin-top: 40px;
-    padding: 20px;
-    background-color: #fff9e6;
-    border-radius: 15px;
-    border: 5px dashed #ff9966;
-    text-align: center;
-}
-
-.support-btn {
-    background: linear-gradient(to right, #ff3366, #ff9966);
-    border: none;
-    padding: 15px 30px;
-    font-size: 1.5rem;
-    border-radius: 50px;
-    cursor: pointer;
-    color: white;
-    font-weight: bold;
-    margin-top: 15px;
-    box-shadow: 0 5px 0 #5a3a1e;
-    transition: all 0.2s;
-}
-
-.support-btn:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 0 #5a3a1e;
-}
 
 /* Game Screen Styles */
 .game-screen {
@@ -427,14 +416,7 @@ body {
     cursor: pointer;
 }
 
-.footer {
-    text-align: center;
-    padding: 20px;
-    background: #5a3a1e;
-    color: #ffcc33;
-    font-size: 0.9rem;
-    margin-top: 20px;
-}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -463,3 +445,182 @@ body {
         font-size: 1.5rem;
     }
 }
+/* Cat image styles */
+.cat {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+.cat:active {
+    transform: scale(0.95);
+}
+.cat-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
+    height: 220px;
+    margin: 10px auto;
+}
+
+.cat {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+/* Keyboard press visual feedback */
+.arrow-btn.keyboard-press {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px #ff3366, 0 7px 0 #5a3a1e;
+    background: linear-gradient(to bottom, #ff3366, #ff9966);
+}
+
+/* Add keyboard hint */
+.keyboard-hint {
+    font-size: 0.9rem;
+    color: #5a3a1e;
+    background: rgba(255, 153, 102, 0.2);
+    padding: 5px 15px;
+    border-radius: 20px;
+    margin-top: 10px;
+}
+
+
+/* UPDATED: Curtain Transition Effect - Now from SIDES (left/right) */
+.curtain-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+    display: flex;
+    justify-content: space-between; /* This helps position the curtains */
+}
+
+.curtain-panel {
+    position: fixed;
+    width: 50%; /* Each curtain takes half the screen width */
+    height: 100%;
+    background: linear-gradient(to right, 
+        rgba(255, 255, 255, 0.95) 0%,
+        rgba(255, 255, 240, 0.98) 50%,
+        rgba(245, 245, 220, 0.95) 100%
+    );
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    transition: transform 0.8s cubic-bezier(0.77, 0, 0.18, 1);
+    z-index: 9999;
+    backdrop-filter: blur(3px);
+    border: none;
+}
+
+/* Add decorative curtain rod effect - UPDATED for vertical orientation */
+.curtain-panel::before {
+    content: '';
+    position: absolute;
+    width: 8px; /* Now vertical instead of horizontal */
+    height: 100%;
+    background: linear-gradient(to right, 
+        #c0a060 0%,
+        #e0c080 50%,
+        #c0a060 100%
+    );
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.curtain-panel.left {
+    left: 0;
+    transform: translateX(-100%); /* Hidden to the left */
+    border-right: 3px solid #d4af37;
+}
+
+.curtain-panel.left::before {
+    right: -8px; /* Position the vertical rod on the right edge */
+    top: 0;
+    height: 100%;
+    width: 8px;
+}
+
+.curtain-panel.right {
+    right: 0;
+    transform: translateX(100%); /* Hidden to the right */
+    border-left: 3px solid #d4af37;
+}
+
+.curtain-panel.right::before {
+    left: -8px; /* Position the vertical rod on the left edge */
+    top: 0;
+    height: 100%;
+    width: 8px;
+}
+
+/* Curtain fold effect - UPDATED for vertical folds */
+.curtain-fold {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        180deg, /* Changed to vertical folds */
+        transparent,
+        transparent 20px,
+        rgba(255, 255, 255, 0.1) 20px,
+        rgba(255, 255, 255, 0.2) 40px
+    );
+    pointer-events: none;
+}
+
+/* Add some wavy pattern like real curtains */
+.curtain-panel::after {
+    content: '';
+    position: fixed;
+    width: 50%;
+    height: 50%;
+    background: radial-gradient(ellipse at 50% 50%,
+        rgba(255, 255, 255, 0.2) 0%,
+        transparent 60%
+    );
+    background-size: 200% 100%; /* Adjusted for horizontal */
+    animation: curtainWaveSide 10s ease-in-out infinite;
+    pointer-events: none;
+}
+
+@keyframes curtainWaveSide {
+    0%, 100% {
+        background-position: 0% 0%;
+        opacity: 0.3;
+    }
+    50% {
+        background-position: 100% 0%;
+        opacity: 0.5;
+    }
+}
+
+/* Curtain open/close states - UPDATED for side movement */
+.curtain-panel.left.open {
+    transform: translateX(0); /* Move to visible position */
+}
+
+.curtain-panel.right.open {
+    transform: translateX(0); /* Move to visible position */
+}
+
+/* Page transition content wrapper */
+.page-content {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.page-content.fade-out {
+    opacity: 0;
+}
+

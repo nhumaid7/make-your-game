@@ -10,7 +10,12 @@ const gameState = {
     isPlayerTurn: false,
     speed: 3,
     sequenceLength: 5,
-    difficulty: 1
+    difficulty: 1,
+    
+    // Cat animation state
+    catState: 'normal', // normal, happy, sad
+    lastKeyPress: null,
+    keyPressTimeout: null
 };
 
 // DOM elements
@@ -35,6 +40,7 @@ const livesDisplay = document.getElementById('lives');
 const sequenceDisplay = document.getElementById('sequence-display');
 const gameInstruction = document.getElementById('game-instruction');
 const gameStatus = document.getElementById('game-status');
+const catImage = document.getElementById('cat-image');
 
 const startBtn = document.getElementById('start-btn');
 const repeatBtn = document.getElementById('repeat-btn');
@@ -43,6 +49,28 @@ const arrowButtons = document.querySelectorAll('.arrow-btn');
 const speedSlider = document.getElementById('speed-slider');
 const lengthSlider = document.getElementById('length-slider');
 const difficultySlider = document.getElementById('difficulty-slider');
+
+// NEW: Curtain elements
+const curtainTop = document.getElementById('curtainTop');
+const curtainBottom = document.getElementById('curtainBottom');
+const curtainSpinner = document.getElementById('curtainSpinner');
+const pageContent = document.getElementById('pageContent');
+
+// Keyboard mapping
+const keyMap = {
+    'ArrowUp': 'up',
+    'ArrowDown': 'down',
+    'ArrowLeft': 'left',
+    'ArrowRight': 'right',
+    'w': 'up',
+    's': 'down',
+    'a': 'left',
+    'd': 'right',
+    'W': 'up',
+    'S': 'down',
+    'A': 'left',
+    'D': 'right'
+};
 
 // Arrow directions and their corresponding icons
 const arrowDirections = ['up', 'down', 'left', 'right'];
@@ -53,28 +81,95 @@ const arrowIcons = {
     right: '→'
 };
 
+// NEW: Curtain Transition Functions
+function closeCurtains(callback) {
+    return new Promise((resolve) => {
+        // Show spinner
+        if (curtainSpinner) curtainSpinner.style.display = 'block';
+        
+        // Fade out content
+        if (pageContent) pageContent.classList.add('fade-out');
+        
+        // Close curtains
+        if (curtainTop) curtainTop.classList.add('open');
+        if (curtainBottom) curtainBottom.classList.add('open');
+        
+        // Wait for curtain animation to complete
+        setTimeout(() => {
+            if (callback) callback();
+            resolve();
+        }, 800); // Match this with CSS transition time
+    });
+}
+
+// NEW: Function to open curtains (show new screen)
+function openCurtains() {
+    return new Promise((resolve) => {
+        // Open curtains (remove open class to close them)
+        if (curtainTop) curtainTop.classList.remove('open');
+        if (curtainBottom) curtainBottom.classList.remove('open');
+        
+        // Wait for curtain animation
+        setTimeout(() => {
+            // Hide spinner
+            if (curtainSpinner) curtainSpinner.style.display = 'none';
+            
+            // Fade in content
+            if (pageContent) pageContent.classList.remove('fade-out');
+            resolve();
+        }, 800);
+    });
+}
+
+// NEW: Enhanced navigation functions with curtain effects
+async function showMainMenuWithCurtain() {
+    await closeCurtains();
+    showMainMenu(); // Your existing function
+    await openCurtains();
+}
+
+async function showGameScreenWithCurtain() {
+    await closeCurtains(() => {
+        // Reset game during curtain transition
+        resetGame();
+        setCatNormal();
+    });
+    showGameScreen(); // Your existing function
+    await openCurtains();
+}
+
+async function showOptionsScreenWithCurtain() {
+    await closeCurtains();
+    showOptionsScreen(); // Your existing function
+    await openCurtains();
+}
+
+async function showCreditsScreenWithCurtain() {
+    await closeCurtains();
+    showCreditsScreen(); // Your existing function
+    await openCurtains();
+}
+
 // Initialize the game
 function initGame() {
-    // Setup event listeners for menu buttons
-    playBtn.addEventListener('click', showGameScreen);
-    optionsBtn.addEventListener('click', showOptionsScreen);
-    creditsBtn.addEventListener('click', showCreditsScreen);
+    // UPDATED: Setup event listeners for menu buttons with curtain effects
+    playBtn.addEventListener('click', showGameScreenWithCurtain);
+    optionsBtn.addEventListener('click', showOptionsScreenWithCurtain);
+    creditsBtn.addEventListener('click', showCreditsScreenWithCurtain);
     exitBtn.addEventListener('click', exitGame);
     supportBtn.addEventListener('click', supportGame);
     
-    // Setup event listeners for back buttons
-    backFromGameBtn.addEventListener('click', showMainMenu);
-    backFromOptionsBtn.addEventListener('click', showMainMenu);
-    backFromCreditsBtn.addEventListener('click', showMainMenu);
+    // UPDATED: Setup event listeners for back buttons with curtain effects
+    backFromGameBtn.addEventListener('click', showMainMenuWithCurtain);
+    backFromOptionsBtn.addEventListener('click', showMainMenuWithCurtain);
+    backFromCreditsBtn.addEventListener('click', showMainMenuWithCurtain);
     
     // Setup game control buttons
     startBtn.addEventListener('click', startGame);
     repeatBtn.addEventListener('click', showSequence);
     
-    // Setup arrow button listeners
-    arrowButtons.forEach(btn => {
-        btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
-    });
+    // Setup keyboard listeners (main change for keyboard input)
+    window.addEventListener('keydown', handleKeyPress);
     
     // Setup option sliders
     speedSlider.addEventListener('input', updateSpeed);
@@ -85,12 +180,15 @@ function initGame() {
     loadSettings();
 }
 
-// Screen navigation functions
+// Screen navigation functions (YOUR EXISTING FUNCTIONS - UNCHANGED)
 function showMainMenu() {
     mainMenu.style.display = 'flex';
     gameScreen.style.display = 'none';
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'none';
+    
+    // Remove keyboard focus from game screen
+    window.removeEventListener('keydown', handleKeyPress);
 }
 
 function showGameScreen() {
@@ -98,8 +196,14 @@ function showGameScreen() {
     gameScreen.style.display = 'flex';
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'none';
+    backFromGameBtn.addEventListener('click', showMainMenuWithCurtain);
+
+    
+    // Add keyboard listener when game screen is active
+    window.addEventListener('keydown', handleKeyPress);
     
     resetGame();
+    setCatNormal(); // Set normal cat at start
 }
 
 function showOptionsScreen() {
@@ -107,6 +211,8 @@ function showOptionsScreen() {
     gameScreen.style.display = 'none';
     optionsScreen.style.display = 'flex';
     creditsScreen.style.display = 'none';
+    backFromOptionsBtn.addEventListener('click',showMainMenu)
+    window.removeEventListener('keydown', handleKeyPress);
 }
 
 function showCreditsScreen() {
@@ -114,9 +220,74 @@ function showCreditsScreen() {
     gameScreen.style.display = 'none';
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'flex';
+    backFromCreditsBtn.addEventListener('click',showMainMenu)
+    window.removeEventListener('keydown', handleKeyPress);
 }
 
-// Game logic functions
+// Cat animation functions (YOUR EXISTING FUNCTIONS - UNCHANGED)
+function setCatNormal() {
+    gameState.catState = 'normal';
+    catImage.src = 'cat-normal.png';
+    catImage.alt = 'Normal Cat';
+}
+
+function setCatHappy() {
+    gameState.catState = 'happy';
+    catImage.src = 'cat-happy.png';
+    catImage.alt = 'Happy Cat';
+    
+    // Reset to normal after 1 second
+    if (gameState.keyPressTimeout) {
+        clearTimeout(gameState.keyPressTimeout);
+    }
+    gameState.keyPressTimeout = setTimeout(() => {
+        if (gameState.isPlaying && !gameState.gameOver) {
+            setCatNormal();
+        }
+    }, 1000);
+}
+
+function setCatSad() {
+    gameState.catState = 'sad';
+    catImage.src = 'cat-sad.png';
+    catImage.alt = 'Sad Cat';
+    
+    // Reset to normal after 1.5 seconds
+    if (gameState.keyPressTimeout) {
+        clearTimeout(gameState.keyPressTimeout);
+    }
+    gameState.keyPressTimeout = setTimeout(() => {
+        if (gameState.isPlaying && !gameState.gameOver) {
+            setCatNormal();
+        }
+    }, 1500);
+}
+
+// Keyboard input handler (YOUR EXISTING FUNCTION - UNCHANGED)
+function handleKeyPress(event) {
+    // Only process keyboard if it's player's turn and game is active
+    if (!gameState.isPlayerTurn || !gameState.isPlaying) {
+        return;
+    }
+    
+    const key = event.key;
+    const direction = keyMap[key];
+    
+    // If the pressed key is mapped to a direction
+    if (direction) {
+        event.preventDefault(); // Prevent page scrolling
+        handleArrowClick(direction);
+        
+        // Also visually highlight the corresponding button
+        const arrowBtn = document.querySelector(`.arrow-btn[data-direction="${direction}"]`);
+        if (arrowBtn) {
+            arrowBtn.classList.add('keyboard-press');
+            setTimeout(() => arrowBtn.classList.remove('keyboard-press'), 200);
+        }
+    }
+}
+
+// Game logic functions (YOUR EXISTING FUNCTIONS - UNCHANGED)
 function resetGame() {
     gameState.currentLevel = 1;
     gameState.score = 0;
@@ -126,12 +297,15 @@ function resetGame() {
     gameState.isPlaying = false;
     gameState.isShowingSequence = false;
     gameState.isPlayerTurn = false;
+    gameState.gameOver = false;
     
     updateDisplay();
     clearSequenceDisplay();
-    gameInstruction.textContent = 'Click "Start Sequence" to begin!';
+    gameInstruction.textContent = 'Click "Start Sequence" or press SPACE to begin!';
     gameStatus.textContent = 'Ready to play!';
     gameStatus.className = 'game-status';
+    
+    setCatNormal(); // Reset cat to normal
     
     startBtn.disabled = false;
     repeatBtn.disabled = true;
@@ -142,12 +316,16 @@ function startGame() {
     if (gameState.isPlaying) return;
     
     gameState.isPlaying = true;
+    gameState.gameOver = false;
     gameState.sequence = generateSequence();
     gameState.playerSequence = [];
     
     updateDisplay();
     gameInstruction.textContent = 'Watch the sequence carefully!';
     gameStatus.textContent = 'Showing sequence...';
+    gameStatus.className = 'game-status';
+    
+    setCatNormal();
     
     startBtn.disabled = true;
     repeatBtn.disabled = false;
@@ -200,16 +378,14 @@ function showSequence() {
             const arrowBtn = document.querySelector(`.arrow-btn[data-direction="${direction}"]`);
             arrowBtn.classList.add('highlight');
             
-            // Remove highlight after a short time
             setTimeout(() => {
                 arrowBtn.classList.remove('highlight');
                 
-                // If this is the last arrow, enable player turn
                 if (index === gameState.sequence.length - 1) {
                     setTimeout(() => {
                         gameState.isShowingSequence = false;
                         gameState.isPlayerTurn = true;
-                        gameInstruction.textContent = 'Your turn! Repeat the sequence.';
+                        gameInstruction.textContent = 'Your turn! Use arrow keys or WASD!';
                         gameStatus.textContent = 'Enter the sequence now!';
                         
                         arrowButtons.forEach(btn => btn.disabled = false);
@@ -226,37 +402,31 @@ function showSequence() {
 function highlightSequenceArrow(index) {
     const arrowElements = document.querySelectorAll('.sequence-arrow');
     
-    // Remove active class from all arrows
     arrowElements.forEach(arrow => arrow.classList.remove('active'));
     
-    // Add active class to current arrow
     if (arrowElements[index]) {
         arrowElements[index].classList.add('active');
     }
 }
 
 function handleArrowClick(direction) {
-    if (!gameState.isPlayerTurn) return;
+    if (!gameState.isPlayerTurn || !gameState.isPlaying) return;
     
     // Add to player sequence
     gameState.playerSequence.push(direction);
-    
-    // Highlight the clicked button
-    const arrowBtn = document.querySelector(`.arrow-btn[data-direction="${direction}"]`);
-    arrowBtn.classList.add('highlight');
-    setTimeout(() => arrowBtn.classList.remove('highlight'), 300);
-    
-    // Highlight the corresponding sequence arrow
-    const arrowIndex = gameState.playerSequence.length - 1;
-    highlightSequenceArrow(arrowIndex);
+    gameState.lastKeyPress = direction;
     
     // Check if the sequence is correct so far
-    if (direction !== gameState.sequence[arrowIndex]) {
-        // Wrong sequence
+    const currentIndex = gameState.playerSequence.length - 1;
+    
+    if (direction !== gameState.sequence[currentIndex]) {
+        // Wrong sequence - CAT SAD
+        setCatSad();
+        
         gameState.lives--;
         gameState.isPlayerTurn = false;
         
-        gameInstruction.textContent = 'Wrong arrow! Try again.';
+        gameInstruction.textContent = 'Wrong key! Try again.';
         gameStatus.textContent = `Incorrect! You have ${gameState.lives} lives remaining.`;
         gameStatus.className = 'game-status error';
         
@@ -264,18 +434,20 @@ function handleArrowClick(direction) {
         startBtn.disabled = true;
         repeatBtn.disabled = false;
         
+        updateDisplay();
+        
         if (gameState.lives <= 0) {
             gameOver();
         } else {
-            // Allow player to retry the same sequence
             setTimeout(() => {
-                gameInstruction.textContent = 'Click "Repeat Sequence" to try again.';
+                gameInstruction.textContent = 'Press "Repeat Sequence" or R to try again.';
             }, 1500);
         }
-        
-        updateDisplay();
         return;
     }
+    
+    // Correct key press - CAT HAPPY
+    setCatHappy();
     
     // Check if player completed the sequence
     if (gameState.playerSequence.length === gameState.sequence.length) {
@@ -283,7 +455,7 @@ function handleArrowClick(direction) {
         gameState.score += gameState.currentLevel * 10 * gameState.difficulty;
         gameState.currentLevel++;
         
-        gameInstruction.textContent = 'Excellent! Sequence correct!';
+        gameInstruction.textContent = 'Perfect! Level up!';
         gameStatus.textContent = `Level ${gameState.currentLevel} starting soon...`;
         gameStatus.className = 'game-status success';
         
@@ -296,20 +468,31 @@ function handleArrowClick(direction) {
         
         // Start next level after a delay
         setTimeout(() => {
-            gameState.sequence = generateSequence();
-            gameInstruction.textContent = 'Get ready for the next sequence!';
-            gameStatus.textContent = 'Showing sequence...';
-            
-            setTimeout(showSequence, 1000);
+            if (gameState.isPlaying) {
+                gameState.sequence = generateSequence();
+                gameState.playerSequence = [];
+                gameInstruction.textContent = 'Get ready for the next sequence!';
+                gameStatus.textContent = 'Showing sequence...';
+                gameStatus.className = 'game-status';
+                
+                setTimeout(showSequence, 1000);
+            }
         }, 2000);
     }
+    
+    updateDisplay();
 }
 
 function gameOver() {
     gameState.isPlaying = false;
+    gameState.gameOver = true;
+    gameState.isPlayerTurn = false;
+    
+    // CAT SAD for game over
+    setCatSad();
     
     gameInstruction.textContent = 'Game Over!';
-    gameStatus.textContent = `Final Score: ${gameState.score}. Click "Start Sequence" to play again.`;
+    gameStatus.textContent = `Final Score: ${gameState.score}. Press SPACE to play again.`;
     gameStatus.className = 'game-status error';
     
     startBtn.disabled = false;
@@ -327,7 +510,7 @@ function updateDisplay() {
     livesDisplay.textContent = gameState.lives;
 }
 
-// Options functions
+// Options functions (YOUR EXISTING FUNCTIONS - UNCHANGED)
 function updateSpeed() {
     gameState.speed = parseInt(speedSlider.value);
     saveSettings();
@@ -366,15 +549,38 @@ function loadSettings() {
     }
 }
 
-// Other button functions
+// Add keyboard shortcut for Start/Repeat (YOUR EXISTING CODE - UNCHANGED)
+window.addEventListener('keydown', (event) => {
+    if (event.code === 'Space' && gameScreen.style.display === 'flex') {
+        event.preventDefault();
+        if (startBtn.disabled === false) {
+            startGame();
+        } else if (repeatBtn.disabled === false && !gameState.isShowingSequence) {
+            showSequence();
+        }
+    }
+    
+    // R key for repeat sequence
+    if (event.key === 'r' || event.key === 'R') {
+        if (repeatBtn.disabled === false && !gameState.isShowingSequence && gameScreen.style.display === 'flex') {
+            showSequence();
+        }
+    }
+});
+
+// Other button functions (YOUR EXISTING FUNCTIONS - UNCHANGED)
 function supportGame() {
-    alert('Thank you for your support! 🎮\n\nIn a real game, this would redirect to a support page.');
+    alert('Thank you for your support! 🐱\n\nIn a real game, this would redirect to a support page.');
 }
 
-function exitGame() {
+// NEW: Enhanced exit function with curtain effect
+async function exitGame() {
     if (confirm('Are you sure you want to exit Fat Cat Fest?')) {
-        alert('Thanks for playing! Come back soon for more arrow challenges!');
-        // In a real implementation, this might close the window or redirect
+        await closeCurtains();
+        setTimeout(() => {
+            alert('Thanks for playing! Come back soon for more cat adventures! 🎭🐱');
+            // In a real implementation, this might close the window or redirect
+        }, 800);
     }
 }
 
