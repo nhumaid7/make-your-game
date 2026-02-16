@@ -401,6 +401,7 @@ body {
 .slider {
     flex-grow: 1;
     height: 20px;
+    appearance: none;
     -webkit-appearance: none;
     background: #ffcc33;
     border-radius: 10px;
