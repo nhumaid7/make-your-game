@@ -42,7 +42,10 @@ nextBtn.addEventListener('click', function () {
 
 chooseBtn.addEventListener('click', function () {
     const selected = characters[current];
-    statusText.textContent = `You have chosen ${selected.name}!`;
-    // Here you can add code to save the selected character or proceed to the next step in your game
+    localStorage.setItem('friendsSelectedCharacter', JSON.stringify(selected));
+    statusText.textContent = `${selected.name} selected! Loading tutorial...`;
+    setTimeout(() => {
+        window.location.href = '/Game/tutorial.html';
+    }, 500);
 });
 renderCharacter();

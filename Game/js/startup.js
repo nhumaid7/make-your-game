@@ -2,11 +2,12 @@
 function initGame() {
     // UPDATED: Setup event listeners for menu buttons with curtain effects
     playBtn.addEventListener('click', showCharacterChooserWithCurtain);
-    chooseBtn.addEventListener('click', showGameScreenWithCurtain);
     optionsBtn.addEventListener('click', showOptionsScreenWithCurtain);
     creditsBtn.addEventListener('click', showCreditsScreenWithCurtain);
     exitBtn.addEventListener('click', exitGame);
-    supportBtn.addEventListener('click', supportGame);
+    if (supportBtn) {
+        supportBtn.addEventListener('click', supportGame);
+    }
 
     // UPDATED: Setup event listeners for back buttons with curtain effects
     backFromGameBtn.addEventListener('click', showMainMenuWithCurtain);
@@ -16,6 +17,9 @@ function initGame() {
     // Setup game control buttons
     startBtn.addEventListener('click', startGame);
     repeatBtn.addEventListener('click', showSequence);
+    arrowButtons.forEach((btn) => {
+        btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
+    });
 
     // Setup keyboard listeners (main change for keyboard input)
     window.addEventListener('keydown', handleKeyPress);
@@ -27,6 +31,7 @@ function initGame() {
 
     // Load saved settings
     loadSettings();
+    loadSelectedCharacter();
 
     const params = new URLSearchParams(window.location.search);
     const isPlayPage = window.location.pathname.endsWith('/Game/play.html') || window.location.pathname.endsWith('/play.html');

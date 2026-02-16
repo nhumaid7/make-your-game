@@ -1,14 +1,21 @@
 // Character animation functions 
+function getSelectedCharacterImage() {
+    if (gameState.selectedCharacter && gameState.selectedCharacter.image) {
+        return gameState.selectedCharacter.image;
+    }
+    return '/Game/assets/images/chandler/chandler.svg';
+}
+
 function setCharNormal() {
     gameState.charState = 'normal';
-    charImage.src = 'cat-normal.png';
-    charImage.alt = 'Normal Character';
+    charImage.src = getSelectedCharacterImage();
+    charImage.alt = `${gameState.selectedCharacter.name || 'Character'} (Normal)`;
 }
 
 function setCharHappy() {
     gameState.charState = 'happy';
-    charImage.src = 'cat-happy.png';
-    charImage.alt = 'Happy Character';
+    charImage.src = getSelectedCharacterImage();
+    charImage.alt = `${gameState.selectedCharacter.name || 'Character'} (Happy)`;
 
     // Reset to normal after 1 second
     if (gameState.keyPressTimeout) {
@@ -23,8 +30,8 @@ function setCharHappy() {
 
 function setCharSad() {
     gameState.charState = 'sad';
-    charImage.src = 'cat-sad.png';
-    charImage.alt = 'Sad Character';
+    charImage.src = getSelectedCharacterImage();
+    charImage.alt = `${gameState.selectedCharacter.name || 'Character'} (Sad)`;
 
     // Reset to normal after 1.5 seconds
     if (gameState.keyPressTimeout) {

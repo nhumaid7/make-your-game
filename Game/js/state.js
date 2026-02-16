@@ -16,7 +16,11 @@ const gameState = {
     // Character animation state
     charState: 'normal', // normal, happy, sad
     lastKeyPress: null,
-    keyPressTimeout: null
+    keyPressTimeout: null,
+    selectedCharacter: {
+        name: 'Chandler',
+        image: '/Game/assets/images/chandler/chandler.svg'
+    }
 };
 
 // DOM elements
@@ -81,3 +85,22 @@ const arrowIcons = {
     left: '←',
     right: '→'
 };
+
+function loadSelectedCharacter() {
+    const savedCharacter = localStorage.getItem('friendsSelectedCharacter');
+    if (!savedCharacter) {
+        return;
+    }
+
+    try {
+        const parsedCharacter = JSON.parse(savedCharacter);
+        if (parsedCharacter && parsedCharacter.image) {
+            gameState.selectedCharacter = parsedCharacter;
+        }
+    } catch (error) {
+        gameState.selectedCharacter = {
+            name: 'Chandler',
+            image: '/Game/assets/images/chandler/chandler.svg'
+        };
+    }
+}

@@ -89,8 +89,6 @@ function showGameScreen() {
     gameScreen.style.display = 'flex';
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'none';
-    backFromGameBtn.addEventListener('click', showMainMenuWithCurtain);
-
 
     // Add keyboard listener when game screen is active
     window.addEventListener('keydown', handleKeyPress);
@@ -104,7 +102,6 @@ function showOptionsScreen() {
     gameScreen.style.display = 'none';
     optionsScreen.style.display = 'flex';
     creditsScreen.style.display = 'none';
-    backFromOptionsBtn.addEventListener('click',showMainMenu)
     window.removeEventListener('keydown', handleKeyPress);
 }
 
@@ -113,6 +110,5 @@ function showCreditsScreen() {
     gameScreen.style.display = 'none';
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'flex';
-    backFromCreditsBtn.addEventListener('click',showMainMenu)
     window.removeEventListener('keydown', handleKeyPress);
 }

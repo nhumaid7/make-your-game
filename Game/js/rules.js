@@ -9,6 +9,7 @@ function resetGame() {
     gameState.isShowingSequence = false;
     gameState.isPlayerTurn = false;
     gameState.gameOver = false;
+    gameState.correctInLevel = 0;
 
     updateDisplay();
     clearSequenceDisplay();
@@ -30,28 +31,25 @@ function startGame() {
     gameState.gameOver = false;
     gameState.sequence = generateSequence();
     gameState.playerSequence = [];
+    gameState.correctInLevel = 0;
 
     updateDisplay();
-    gameInstruction.textContent = 'Watch the sequence carefully!';
-    gameStatus.textContent = 'Showing sequence...';
+    gameInstruction.textContent = 'Press the next matching arrow (or WASD)!';
+    gameStatus.textContent = 'Game started. Follow the sequence queue.';
     gameStatus.className = 'game-status';
 
     setCharNormal();
 
     startBtn.disabled = true;
-    repeatBtn.disabled = false;
-    arrowButtons.forEach(btn => btn.disabled = true);
+    repeatBtn.disabled = true;
+    arrowButtons.forEach(btn => btn.disabled = false);
 
     showSequence();
 }
 
 function generateSequence() {
     const sequence = [];
-    const baseLength = gameState.sequenceLength;
-    const difficulty = gameState.difficulty;
-
-    // Increase sequence length based on level and difficulty
-    const length = baseLength + Math.floor((gameState.currentLevel - 1) / 2) + (difficulty - 1);
+    const length = Math.max(4, gameState.sequenceLength + (gameState.difficulty - 1));
 
     for (let i = 0; i < length; i++) {
         const randomDirection = arrowDirections[Math.floor(Math.random() * arrowDirections.length)];
@@ -62,59 +60,21 @@ function generateSequence() {
 }
 
 function showSequence() {
-    if (gameState.isShowingSequence) return;
+    if (!gameState.sequence.length) {
+        gameState.sequence = generateSequence();
+    }
 
-    gameState.isShowingSequence = true;
-    gameState.playerSequence = [];
-    clearSequenceDisplay();
-
-    // Create sequence display
-    gameState.sequence.forEach((direction, index) => {
-        const arrowElement = document.createElement('div');
-        arrowElement.className = 'sequence-arrow';
-        arrowElement.textContent = arrowIcons[direction];
-        arrowElement.dataset.index = index;
-        sequenceDisplay.appendChild(arrowElement);
-    });
-
-    // Animate the sequence
-    let delay = 0;
-    const baseSpeed = 800 - (gameState.speed - 1) * 150; // 800ms to 400ms
-
-    gameState.sequence.forEach((direction, index) => {
-        setTimeout(() => {
-            highlightSequenceArrow(index);
-
-            // Highlight the corresponding control button
-            const arrowBtn = document.querySelector(`.arrow-btn[data-direction="${direction}"]`);
-            arrowBtn.classList.add('highlight');
-
-            setTimeout(() => {
-                arrowBtn.classList.remove('highlight');
-
-                if (index === gameState.sequence.length - 1) {
-                    setTimeout(() => {
-                        gameState.isShowingSequence = false;
-                        gameState.isPlayerTurn = true;
-                        gameInstruction.textContent = 'Your turn! Use arrow keys or WASD!';
-                        gameStatus.textContent = 'Enter the sequence now!';
-
-                        arrowButtons.forEach(btn => btn.disabled = false);
-                        repeatBtn.disabled = false;
-                    }, 500);
-                }
-            }, 300);
-        }, delay);
-
-        delay += baseSpeed;
-    });
+    renderSequenceDisplay();
+    gameState.isShowingSequence = false;
+    gameState.isPlayerTurn = true;
+    gameInstruction.textContent = 'Hit the first arrow shown in the queue.';
+    gameStatus.textContent = 'Sequence is fixed until you press a key.';
+    gameStatus.className = 'game-status';
 }
 
 function highlightSequenceArrow(index) {
     const arrowElements = document.querySelectorAll('.sequence-arrow');
-
     arrowElements.forEach(arrow => arrow.classList.remove('active'));
-
     if (arrowElements[index]) {
         arrowElements[index].classList.add('active');
     }
@@ -123,75 +83,44 @@ function highlightSequenceArrow(index) {
 function handleArrowClick(direction) {
     if (!gameState.isPlayerTurn || !gameState.isPlaying) return;
 
-    // Add to player sequence
-    gameState.playerSequence.push(direction);
     gameState.lastKeyPress = direction;
 
-    // Check if the sequence is correct so far
-    const currentIndex = gameState.playerSequence.length - 1;
+    const expectedDirection = gameState.sequence[0];
+    const isCorrect = direction === expectedDirection;
 
-    if (direction !== gameState.sequence[currentIndex]) {
-        // Wrong sequence - CHAR SAD
+    if (!isCorrect) {
         setCharSad();
-
         gameState.lives--;
-        gameState.isPlayerTurn = false;
 
-        gameInstruction.textContent = 'Wrong key! Try again.';
-        gameStatus.textContent = `Incorrect! You have ${gameState.lives} lives remaining.`;
+        gameInstruction.textContent = 'Wrong key.';
+        gameStatus.textContent = `Wrong! Expected ${arrowIcons[expectedDirection]}. Lives: ${gameState.lives}`;
         gameStatus.className = 'game-status error';
-
-        arrowButtons.forEach(btn => btn.disabled = true);
-        startBtn.disabled = true;
-        repeatBtn.disabled = false;
-
         updateDisplay();
 
         if (gameState.lives <= 0) {
             gameOver();
-        } else {
-            setTimeout(() => {
-                gameInstruction.textContent = 'Press "Repeat Sequence" or R to try again.';
-            }, 1500);
+            return;
         }
-        return;
-    }
+    } else {
+        setCharHappy();
+        gameState.score += 10 * gameState.difficulty;
+        gameState.correctInLevel++;
 
-    // Correct key press - CHAR HAPPY
-    setCharHappy();
-
-    // Check if player completed the sequence
-    if (gameState.playerSequence.length === gameState.sequence.length) {
-        // Correct sequence completed
-        gameState.score += gameState.currentLevel * 10 * gameState.difficulty;
-        gameState.currentLevel++;
-
-        gameInstruction.textContent = 'Perfect! Level up!';
-        gameStatus.textContent = `Level ${gameState.currentLevel} starting soon...`;
+        const levelTarget = getLevelTarget();
+        if (gameState.correctInLevel >= levelTarget) {
+            gameState.currentLevel++;
+            gameState.correctInLevel = 0;
+            gameInstruction.textContent = 'Level up! Keep going.';
+            gameStatus.textContent = `Great! Welcome to Level ${gameState.currentLevel}.`;
+        } else {
+            gameInstruction.textContent = 'Correct! Hit the next arrow.';
+            gameStatus.textContent = 'Nice move. Sequence shifted forward.';
+        }
         gameStatus.className = 'game-status success';
-
-        gameState.isPlayerTurn = false;
-        arrowButtons.forEach(btn => btn.disabled = true);
-        startBtn.disabled = true;
-        repeatBtn.disabled = true;
-
         updateDisplay();
-
-        // Start next level after a delay
-        setTimeout(() => {
-            if (gameState.isPlaying) {
-                gameState.sequence = generateSequence();
-                gameState.playerSequence = [];
-                gameInstruction.textContent = 'Get ready for the next sequence!';
-                gameStatus.textContent = 'Showing sequence...';
-                gameStatus.className = 'game-status';
-
-                setTimeout(showSequence, 1000);
-            }
-        }, 2000);
     }
 
-    updateDisplay();
+    advanceSequenceWindow();
 }
 
 function gameOver() {
@@ -209,6 +138,43 @@ function gameOver() {
     startBtn.disabled = false;
     repeatBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = true);
+}
+
+function getLevelTarget() {
+    return Math.max(4, gameState.sequenceLength + (gameState.difficulty - 1));
+}
+
+function renderSequenceDisplay() {
+    clearSequenceDisplay();
+    gameState.sequence.forEach((direction, index) => {
+        const arrowElement = document.createElement('div');
+        arrowElement.className = 'sequence-arrow';
+        if (index === 0) {
+            arrowElement.classList.add('active');
+        }
+        arrowElement.textContent = arrowIcons[direction];
+        sequenceDisplay.appendChild(arrowElement);
+    });
+}
+
+function advanceSequenceWindow() {
+    const arrowElements = Array.from(document.querySelectorAll('.sequence-arrow'));
+    arrowElements.forEach((arrow, index) => {
+        arrow.classList.add('shifting');
+        if (index === 0) {
+            arrow.classList.add('shift-out');
+        } else {
+            arrow.classList.add('shift-left');
+        }
+    });
+
+    const shiftDuration = 180;
+    setTimeout(() => {
+        gameState.sequence.shift();
+        const randomDirection = arrowDirections[Math.floor(Math.random() * arrowDirections.length)];
+        gameState.sequence.push(randomDirection);
+        renderSequenceDisplay();
+    }, shiftDuration);
 }
 
 function clearSequenceDisplay() {
