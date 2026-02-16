@@ -28,7 +28,8 @@ function initGame() {
     loadSettings();
 
     const params = new URLSearchParams(window.location.search);
-    if (params.get('play') === '1') {
+    const isPlayPage = window.location.pathname.endsWith('/Game/play.html') || window.location.pathname.endsWith('/play.html');
+    if (isPlayPage || params.get('play') === '1') {
         showGameScreen();
     }
 }
