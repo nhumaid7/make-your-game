@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Play - Friends</title>
+    <link rel="stylesheet" href="/Game/css/style.css">
+</head>
+<body class="tutorial-page">
+    <main class="tutorial-card">
+        <h1 class="tutorial-title">How to Play</h1>
+        <p class="tutorial-subtitle">Press each control once to finish the tutorial.</p>
+
+        <div class="tutorial-grid">
+            <div class="tutorial-item" data-dir="up">
+                <div class="tutorial-symbol">↑</div>
+                <div class="tutorial-keys">Arrow Up or W</div>
+            </div>
+            <div class="tutorial-item" data-dir="left">
+                <div class="tutorial-symbol">←</div>
+                <div class="tutorial-keys">Arrow Left or A</div>
+            </div>
+            <div class="tutorial-item" data-dir="down">
+                <div class="tutorial-symbol">↓</div>
+                <div class="tutorial-keys">Arrow Down or S</div>
+            </div>
+            <div class="tutorial-item" data-dir="right">
+                <div class="tutorial-symbol">→</div>
+                <div class="tutorial-keys">Arrow Right or D</div>
+            </div>
+        </div>
+
+        <p class="tutorial-status" id="tutorialStatus">Try all 4 directions to continue.</p>
+        <button id="startGameBtn" class="choose-btn" type="button" disabled>Start Real Game</button>
+    </main>
+
+    <script src="/Game/js/tutorial.js"></script>
+</body>
+</html>

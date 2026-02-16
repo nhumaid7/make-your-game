@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Choose Character</title>
+	<link rel="stylesheet" href="/Game/css/style.css">
+</head>
+<body class="choose-char-page">
+	<main class="selector-card">
+		<h1 class="selector-title">Choose Character</h1>
+
+		<h2 class="character-name" id="characterName">Character Name</h2>
+
+		<div class="character-row">
+			<button class="switch-btn" id="prevBtn" type="button" aria-label="Previous character">&#8592;</button>
+
+			<div class="character-frame">
+				<img class="character-image" id="characterImage" alt="Selected character">
+			</div>
+
+			<button class="switch-btn" id="nextBtn" type="button" aria-label="Next character">&#8594;</button>
+		</div>
+
+		<button class="choose-btn" id="chooseBtn" type="button">choose the character</button>
+		<p class="status" id="statusText"></p>
+	</main>
+
+	<script src="/Game/js/char.js"></script>
+</body>
+</html>
