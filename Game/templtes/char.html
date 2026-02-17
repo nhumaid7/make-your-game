@@ -7,23 +7,25 @@
 	<link rel="stylesheet" href="/Game/css/style.css">
 </head>
 <body class="choose-char-page">
-	<main class="selector-card">
-		<h1 class="selector-title">Choose Character</h1>
+	<main class="char-scene" aria-label="Choose character">
+		<img class="char-background" src="/Game/assets/images/char/background.svg" alt="">
 
-		<h2 class="character-name" id="characterName">Character Name</h2>
+		<button class="nav-arrow prev" id="prevBtn" type="button" aria-label="Previous character">
+			<img src="/Game/assets/images/char/prev.svg" alt="">
+		</button>
 
-		<div class="character-row">
-			<button class="switch-btn" id="prevBtn" type="button" aria-label="Previous character">&#8592;</button>
-
-			<div class="character-frame">
-				<img class="character-image" id="characterImage" alt="Selected character">
-			</div>
-
-			<button class="switch-btn" id="nextBtn" type="button" aria-label="Next character">&#8594;</button>
+		<div class="character-stage">
+			<img class="character-image" id="characterImage" alt="Selected character">
 		</div>
 
-		<button class="choose-btn" id="chooseBtn" type="button">choose the character</button>
-		<p class="status" id="statusText"></p>
+		<button class="nav-arrow next" id="nextBtn" type="button" aria-label="Next character">
+			<img src="/Game/assets/images/char/next.svg" alt="">
+		</button>
+
+		<button class="character-name-btn" id="chooseBtn" type="button" aria-label="Choose character">
+			<img id="characterNameImage" alt="Selected character name">
+		</button>
+		<p class="status" id="statusText" aria-live="polite"></p>
 	</main>
 
 	<script src="/Game/js/char.js"></script>
