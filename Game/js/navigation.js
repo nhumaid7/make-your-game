@@ -71,6 +71,7 @@ async function showCreditsScreenWithCurtain() {
 async function showCharacterChooserWithCurtain() {
     await closeCurtains();
     window.location.href = '/Game/templtes/char.html';
+    await openCurtains();
 }
 
 // Screen navigation functions 
