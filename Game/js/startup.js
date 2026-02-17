@@ -1,7 +1,7 @@
 // set up actions and event listeners for the game
 function initGame() {
     // UPDATED: Setup event listeners for menu buttons with curtain effects
-    playBtn.addEventListener('click', showCharacterChooserWithCurtain);
+    playBtn.addEventListener('click', showGameScreenWithCurtain);
     optionsBtn.addEventListener('click', showOptionsScreenWithCurtain);
     creditsBtn.addEventListener('click', showCreditsScreenWithCurtain);
     exitBtn.addEventListener('click', exitGame);

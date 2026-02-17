@@ -1,27 +1,6 @@
 // initialize game state and DOM (Document Object Model) elements
-// Game state
-const gameState = {
-    currentLevel: 1,
-    score: 0,
-    lives: 3,
-    sequence: [],
-    playerSequence: [],
-    isPlaying: false,
-    isShowingSequence: false,
-    isPlayerTurn: false,
-    speed: 3,
-    sequenceLength: 5,
-    difficulty: 1,
 
-    // Character animation state
-    charState: 'normal', // normal, happy, sad
-    lastKeyPress: null,
-    keyPressTimeout: null,
-    selectedCharacter: {
-        name: 'Chandler',
-        image: '/Game/assets/images/chandler/chandler.svg'
-    }
-};
+
 
 // DOM elements
 const mainMenu = document.getElementById('main-menu');
@@ -84,6 +63,30 @@ const arrowIcons = {
     down: '↓',
     left: '←',
     right: '→'
+};
+
+// Game state
+const gameState = {
+    currentLevel: 1,
+    score: 0,
+    lives: 3,
+    sequence: [],
+    playerSequence: [],
+    isPlaying: false,
+    isShowingSequence: false,
+    isPlayerTurn: false,
+    speed: 3,
+    sequenceLength: 5,
+    difficulty: 1,
+
+    // Character animation state
+    charState: 'normal', // normal, happy, sad
+    lastKeyPress: null,
+    keyPressTimeout: null,
+    selectedCharacter: {
+        name: 'Chandler',
+        image: '/Game/assets/images/chandler/chandler.svg'
+    }
 };
 
 function loadSelectedCharacter() {

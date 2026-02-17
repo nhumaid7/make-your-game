@@ -16,7 +16,7 @@ body {
 }
 /* Main background for the whole page */
 body {
-    background-image: url('/Game/images/mainBckground\ .jpg'); /* Adjust path */
+    background-image: url('/Game/assets/images/mainBckground\ .jpg'); /* Adjust path */
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;

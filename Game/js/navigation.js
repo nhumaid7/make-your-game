@@ -89,14 +89,11 @@ function showGameScreen() {
     gameScreen.style.display = 'flex';
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'none';
-
-    // Add keyboard listener when game screen is active
+    
     window.addEventListener('keydown', handleKeyPress);
-
     resetGame();
-    setCharNormal(); // Set normal character at start
+    setCharNormal();
 }
-
 function showOptionsScreen() {
     mainMenu.style.display = 'none';
     gameScreen.style.display = 'none';
