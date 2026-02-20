@@ -16,7 +16,7 @@ function initGame() {
 
     // Setup game control buttons
     startBtn.addEventListener('click', startGame);
-    repeatBtn.addEventListener('click', showSequence);
+    repeatBtn.addEventListener('click', repeatGame);
     arrowButtons.forEach((btn) => {
         btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
     });
