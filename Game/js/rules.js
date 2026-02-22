@@ -12,7 +12,10 @@ function resetGame() {
     gameState.correctInLevel = 0;
 
     updateDisplay();
-    clearSequenceDisplay();
+    // Generate and show initial sequence preview
+    gameState.sequence = generateSequence();
+    renderSequenceDisplay();
+    
     gameInstruction.textContent = 'Click "Start Sequence" or press SPACE to begin!';
     gameStatus.textContent = 'Ready to play!';
     gameStatus.className = 'game-status';
@@ -20,7 +23,7 @@ function resetGame() {
     setCharNormal(); // Reset character to normal
 
     startBtn.disabled = false;
-    repeatBtn.disabled = true;
+    pauseBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = true);
 }
 
@@ -41,14 +44,14 @@ function startGame() {
     setCharNormal();
 
     startBtn.disabled = true;
-    repeatBtn.disabled = true;
+    pauseBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = false);
 
     showSequence();
 }
 
-// Repeat the current sequence but reset score and lives so the player can try again
-function repeatGame() {
+// Restart the current sequence (reset score/lives) so the player can try again
+function restartSequence() {
     // clear any pending move timer
     clearMoveTimer();
 
@@ -64,8 +67,8 @@ function repeatGame() {
     setCharNormal();
 
     startBtn.disabled = true;
-    // We'll disable repeat while the sequence is being shown/played
-    repeatBtn.disabled = true;
+    // We'll disable pause while the sequence is being shown/played
+    pauseBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = false);
 
     // Ensure there's a sequence to replay
@@ -96,8 +99,8 @@ function showSequence() {
 
     renderSequenceDisplay();
 
-    // When showing the sequence we disable player input and the repeat button
-    repeatBtn.disabled = true;
+    // When showing the sequence we disable player input and the pause button
+    pauseBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = true);
 
     // compute highlight delay from gameState.speed (higher -> faster)
@@ -129,18 +132,19 @@ function showSequence() {
                 gameStatus.textContent = 'Sequence ready. Your turn!';
                 gameStatus.className = 'game-status';
                 arrowButtons.forEach(btn => btn.disabled = false);
-                // enable repeating after preview
-                repeatBtn.disabled = false;
-                // start the per-step move timer
+                // enable pause button after preview
+                pauseBtn.disabled = false;
+                // start the per-step move timer and continuous movement
                 startMoveTimer();
+                restartContinuousMovement();
             } else {
                 gameState.isShowingSequence = false;
                 gameState.isPlayerTurn = false;
                 gameInstruction.textContent = 'Sequence preview finished.';
                 gameStatus.textContent = 'Preview complete.';
                 gameStatus.className = 'game-status';
-                // allow the user to replay again or start a new game
-                repeatBtn.disabled = false;
+                // allow the user to pause/resume or start a new game
+                pauseBtn.disabled = false;
             }
         }
     }
@@ -207,6 +211,10 @@ function gameOver() {
     gameState.gameOver = true;
     gameState.isPlayerTurn = false;
 
+    // Clear timers and animations when game ends
+    clearMoveTimer();
+    stopContinuousMovement();
+
     // CHAR SAD for game over
     setCharSad();
 
@@ -215,8 +223,8 @@ function gameOver() {
     gameStatus.className = 'game-status error';
 
     startBtn.disabled = false;
-    // allow player to replay the last sequence after losing
-    repeatBtn.disabled = false;
+    // allow player to pause/resume or replay the last sequence after losing
+    pauseBtn.disabled = false;
     arrowButtons.forEach(btn => btn.disabled = true);
 }
 
@@ -248,7 +256,7 @@ function advanceSequenceWindow() {
         }
     });
 
-    const shiftDuration = 180;
+    const shiftDuration = 250;
     setTimeout(() => {
         gameState.sequence.shift();
         const randomDirection = arrowDirections[Math.floor(Math.random() * arrowDirections.length)];
@@ -257,9 +265,42 @@ function advanceSequenceWindow() {
         // after the visual shift completes and the sequence is re-rendered,
         // start the move timer again so the next arrow will begin to fade/move
         if (gameState.isPlaying && gameState.isPlayerTurn) {
-            startMoveTimer();
+            // Use requestAnimationFrame to ensure DOM is updated before animating
+            requestAnimationFrame(() => {
+                startMoveTimer();
+                // keep continuous movement running
+                restartContinuousMovement();
+            });
         }
     }, shiftDuration);
+}
+
+// Continuous movement: periodically advance the sequence so arrows keep moving
+function startContinuousMovement(stepTime) {
+    stopContinuousMovement();
+    if (!stepTime) return;
+    gameState.sequenceInterval = setInterval(() => {
+        // only auto-advance when player is allowed to play
+        if (gameState.isPlaying && gameState.isPlayerTurn) {
+            advanceSequenceWindow();
+        }
+    }, stepTime + 40); // small buffer to allow transition
+}
+
+function stopContinuousMovement() {
+    if (gameState.sequenceInterval) {
+        clearInterval(gameState.sequenceInterval);
+        gameState.sequenceInterval = null;
+    }
+}
+
+function restartContinuousMovement() {
+    stopContinuousMovement();
+    // compute stepTime from speed similar to startMoveTimer
+    const baseTime = 2200;
+    const speedFactor = Math.max(0, (gameState.speed - 1));
+    const stepTime = Math.max(600, baseTime - speedFactor * 350);
+    startContinuousMovement(stepTime);
 }
 
 // Start a timer that will auto-advance the sequence if the player does not
@@ -271,6 +312,9 @@ function startMoveTimer() {
     const baseTime = 2200;
     const speedFactor = Math.max(0, (gameState.speed - 1));
     const time = Math.max(600, baseTime - speedFactor * 350);
+
+    // start a smooth move animation that will visually slide the arrows
+    startMoveAnimation(time);
 
     gameState.keyPressTimeout = setTimeout(() => {
         // treat timeout as a missed key (penalize the player)
@@ -297,6 +341,40 @@ function clearMoveTimer() {
         clearTimeout(gameState.keyPressTimeout);
         gameState.keyPressTimeout = null;
     }
+    // stop any in-progress move animation
+    clearMoveAnimation();
+}
+
+// Start a smooth translation animation for sequence arrows that lasts `time` ms.
+function startMoveAnimation(time) {
+    clearMoveAnimation();
+    const arrowElements = Array.from(document.querySelectorAll('.sequence-arrow'));
+    if (!arrowElements.length) return;
+
+    arrowElements.forEach((arrow, index) => {
+        // ensure transitions use linear timing to look like continuous movement
+        arrow.style.transition = `transform ${time}ms linear, opacity ${Math.min(300, time)}ms linear`;
+        // start the movement: front arrow moves slightly more (fades out)
+        const shift = index === 0 ? -140 : -100;
+        // trigger a frame so the transition applies
+        requestAnimationFrame(() => {
+            arrow.style.transform = `translateX(${shift}px)`;
+            if (index === 0) arrow.style.opacity = '0.6';
+        });
+    });
+
+    gameState.moveAnimationActive = true;
+}
+
+function clearMoveAnimation() {
+    const arrowElements = Array.from(document.querySelectorAll('.sequence-arrow'));
+    if (!arrowElements.length) return;
+    arrowElements.forEach((arrow) => {
+        arrow.style.transition = '';
+        arrow.style.transform = '';
+        arrow.style.opacity = '';
+    });
+    gameState.moveAnimationActive = false;
 }
 
 function clearSequenceDisplay() {
@@ -307,4 +385,60 @@ function updateDisplay() {
     levelDisplay.textContent = gameState.currentLevel;
     scoreDisplay.textContent = gameState.score;
     livesDisplay.textContent = gameState.lives;
+}
+
+// Pause / Resume support: toggles timers and continuous movement
+function togglePause() {
+    // Only allow pausing when a game is in progress
+    if (!gameState.isPlaying) return;
+
+    if (!gameState.gamePaused) {
+        pauseGame();
+    } else {
+        resumeGame();
+    }
+}
+
+function pauseGame() {
+    gameState.gamePaused = true;
+    // stop any active timers/animations
+    clearMoveTimer();
+    stopContinuousMovement();
+
+    // disable player input while paused
+    arrowButtons.forEach(btn => btn.disabled = true);
+
+    // update UI
+    gameInstruction.textContent = 'Paused';
+    gameStatus.textContent = 'Game paused.';
+    gameStatus.className = 'game-status';
+
+    // change control button to a Resume control (keeps same element id)
+    if (pauseBtn) {
+        pauseBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
+        pauseBtn.disabled = false;
+    }
+}
+
+function resumeGame() {
+    gameState.gamePaused = false;
+
+    // restore UI and timers depending on whether it is player's turn
+    gameInstruction.textContent = gameState.isPlayerTurn ? 'Your turn.' : 'Sequence running.';
+    gameStatus.textContent = 'Resumed.';
+    gameStatus.className = 'game-status';
+
+    // restore arrow button enabled state only if it's player's turn
+    arrowButtons.forEach(btn => btn.disabled = !gameState.isPlayerTurn);
+
+    // restart timers if appropriate
+    if (gameState.isPlayerTurn) {
+        startMoveTimer();
+    }
+    restartContinuousMovement();
+
+    if (pauseBtn) {
+        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        pauseBtn.disabled = false;
+    }
 }

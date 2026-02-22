@@ -16,7 +16,7 @@ function initGame() {
 
     // Setup game control buttons
     startBtn.addEventListener('click', startGame);
-    repeatBtn.addEventListener('click', repeatGame);
+    pauseBtn.addEventListener('click', togglePause);
     arrowButtons.forEach((btn) => {
         btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
     });
@@ -86,16 +86,12 @@ window.addEventListener('keydown', (event) => {
         event.preventDefault();
         if (startBtn.disabled === false) {
             startGame();
-        } else if (repeatBtn.disabled === false && !gameState.isShowingSequence) {
-            showSequence();
         }
     }
 
-    // R key for repeat sequence
-    if (event.key === 'r' || event.key === 'R') {
-        if (repeatBtn.disabled === false && !gameState.isShowingSequence && gameScreen.style.display === 'flex') {
-            showSequence();
-        }
+    // P key toggles pause/resume when a game is active
+    if ((event.key === 'p' || event.key === 'P') && gameScreen.style.display === 'flex') {
+        if (gameState.isPlaying) togglePause();
     }
 });
 
