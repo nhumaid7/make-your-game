@@ -16,7 +16,7 @@ body {
 }
 /* Main background for the whole page */
 body {
-    background-image: url('/Game/images/mainBckground\ .jpg'); /* Adjust path */
+    background-image: url('/Game/assets/images/mainBckground.jpg'); /* Adjust path */
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -178,23 +178,160 @@ body {
     gap: 30px;
 }
 
-/* Sequence Display */
+/* Replace the existing sequence-display styles with these */
+
 .sequence-display {
+    position: relative;
     background: #fff9e6;
     border-radius: 20px;
-    padding: 25px;
+    padding: 0;
     width: 100%;
     height: 120px;
+    border: 5px solid #ffcc33;
+    overflow: hidden;
+    background: linear-gradient(to right, #f0e6d2, #fff9e6);
+}
+
+/* Target zone at LEFT end */
+.target-zone {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 60px;
+    height: 100%;
+    background: rgba(76, 175, 80, 0.2);
+    border-right: 3px solid #4caf50;
+    z-index: 5;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px;
-    border: 5px solid #ffcc33;
-    overflow: hidden;
-    position: relative;
 }
 
+.target-arrow {
+    font-size: 3rem;
+    color: #4caf50;
+    filter: drop-shadow(0 0 10px #4caf50);
+    animation: targetPulse 1s ease-in-out infinite;
+}
+
+@keyframes targetPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* Perfect hit indicator */
+.target-zone.perfect-ready {
+    background: rgba(76, 175, 80, 0.4);
+    box-shadow: 0 0 20px #4caf50;
+}
+
+/* Hit zone divisions */
+.hit-perfect {
+    position: absolute;
+    left: 15px;
+    width: 20px;
+    height: 100%;
+    background: rgba(76, 175, 80, 0.3);
+    z-index: 6;
+}
+
+.hit-good {
+    position: absolute;
+    left: 0;
+    width: 50px;
+    height: 100%;
+    background: rgba(255, 193, 7, 0.2);
+    z-index: 4;
+}
+
+/* Moving arrow styles */
+.moving-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 3rem;
+    width: 60px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    z-index: 10;
+    transition: box-shadow 0.1s ease;
+    pointer-events: none; /* So clicks pass through to buttons */
+}
+
+.moving-arrow.up { color: #ff9966; }
+.moving-arrow.down { color: #ffcc33; }
+.moving-arrow.left { color: #ff3366; }
+.moving-arrow.right { color: #4caf50; }
+
+/* Arrow in hit zone */
+.moving-arrow.in-hit-zone {
+    box-shadow: 0 0 20px #4caf50;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.moving-arrow.in-perfect-zone {
+    box-shadow: 0 0 30px #4caf50;
+    transform: translateY(-50%) scale(1.15);
+    border: 2px solid #4caf50;
+}
+
+/* Hit animations */
+.moving-arrow.hit-perfect {
+    animation: perfectHit 0.3s ease-out forwards;
+}
+
+.moving-arrow.hit-good {
+    animation: goodHit 0.3s ease-out forwards;
+}
+
+.moving-arrow.hit-miss {
+    animation: missHit 0.3s ease-out forwards;
+}
+
+@keyframes perfectHit {
+    0% { transform: translateY(-50%) scale(1.15); opacity: 1; }
+    50% { transform: translateY(-50%) scale(1.5); opacity: 0.8; background: #4caf50; color: white; }
+    100% { transform: translateY(-50%) scale(0); opacity: 0; }
+}
+
+@keyframes goodHit {
+    0% { transform: translateY(-50%) scale(1.1); opacity: 1; }
+    50% { transform: translateY(-50%) scale(1.3); opacity: 0.6; background: #ffc107; color: white; }
+    100% { transform: translateY(-50%) scale(0); opacity: 0; }
+}
+
+@keyframes missHit {
+    0% { transform: translateY(-50%); opacity: 1; }
+    100% { transform: translateY(-50%) scale(0.5); opacity: 0; background: #f44336; }
+}
+
+/* Score popup */
+.score-popup {
+    position: absolute;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4caf50;
+    animation: scoreFloat 1s ease-out forwards;
+    z-index: 20;
+    pointer-events: none;
+}
+
+@keyframes scoreFloat {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-50px); opacity: 0; }
+}
+
+/* Remove old sequence-arrow styles */
 .sequence-arrow {
+    display: none; /* Hide old arrows */
+}
+
+/* .sequence-arrow {
     font-size: 3.5rem;
     min-width: 80px;
     height: 80px;
@@ -206,15 +343,14 @@ body {
     box-shadow: 0 5px 10px rgba(0,0,0,0.1);
     opacity: 0.7;
     transition: all 0.3s;
-}
-
+ }
 .sequence-arrow.active {
     opacity: 1;
     transform: scale(1.2);
     box-shadow: 0 0 20px #ff9966;
     background: #ff9966;
     color: white;
-}
+} */
 
 /* Controls */
 .controls {
@@ -634,6 +770,7 @@ body {
     align-items: center;
     padding: 0;
     overflow: hidden;
+    background: linear-gradient(135deg, #ffcc33, #ff9966);
 }
 
 .choose-char-page .char-scene {
@@ -807,5 +944,103 @@ body {
     min-height: 1.4rem;
     margin-bottom: 12px;
     font-size: 0.95rem;
+}
+
+
+
+
+.target-line {
+    position: absolute;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: #ffd700;
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px #ffd700;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.moving-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    transition: all 0.1s ease;
+    z-index: 5;
+}
+
+.moving-arrow.up { color: #4caf50; }
+.moving-arrow.down { color: #f44336; }
+.moving-arrow.left { color: #2196f3; }
+.moving-arrow.right { color: #ff9800; }
+
+/* Arrow button hit effects */
+.arrow-btn.perfect-hit {
+    background: #4caf50 !important;
+    transform: scale(1.2);
+    box-shadow: 0 0 20px #4caf50;
+}
+
+.arrow-btn.miss-hit {
+    background: #f44336 !important;
+    transform: scale(0.9);
+    box-shadow: 0 0 20px #f44336;
+}
+
+/* Animation for shifting out (keeping for compatibility) */
+.sequence-arrow.shifting {
+    transition: all 0.18s ease;
+}
+
+.sequence-arrow.shift-out {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.sequence-arrow.shift-left {
+    transform: translateX(-60px);
+}
+
+/* Game status enhancements */
+.game-status.success {
+    color: #4caf50;
+    text-shadow: 0 0 10px #4caf50;
+}
+
+.game-status.error {
+    color: #f44336;
+    text-shadow: 0 0 10px #f44336;
+}
+
+/* Character container */
+.char-container {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
+}
+
+.char {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: all 0.3s ease;
+}
+
+.char[alt*="Happy"] {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 10px #4caf50);
+}
+
+.char[alt*="Sad"] {
+    transform: scale(0.9);
+    filter: drop-shadow(0 0 10px #f44336);
 }
 

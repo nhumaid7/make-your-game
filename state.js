@@ -104,3 +104,5 @@ function loadSelectedCharacter() {
         };
     }
 }
+
+

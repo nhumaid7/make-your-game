@@ -1,23 +1,31 @@
-// Game logic functions 
+// Game logic functions for rhythm-based arrow game
+
 function resetGame() {
+    // Stop any running game and clear arrows
+    stopRhythmGame();
+    initRhythmGame(); // Initialize rhythm game variables
+    
     gameState.currentLevel = 1;
     gameState.score = 0;
     gameState.lives = 3;
+    gameState.isPlaying = false;
+    gameState.gameOver = false;
+    gameState.isPlayerTurn = true; // Set to true for rhythm game
+    gameState.consecutiveHits = 0;
+    
+    // Clear old sequence variables
     gameState.sequence = [];
     gameState.playerSequence = [];
-    gameState.isPlaying = false;
     gameState.isShowingSequence = false;
-    gameState.isPlayerTurn = false;
-    gameState.gameOver = false;
     gameState.correctInLevel = 0;
 
     updateDisplay();
-    clearSequenceDisplay();
-    gameInstruction.textContent = 'Click "Start Sequence" or press SPACE to begin!';
+    clearMovingArrows();
+    gameInstruction.textContent = 'Press SPACE to start the rhythm game!';
     gameStatus.textContent = 'Ready to play!';
     gameStatus.className = 'game-status';
 
-    setCharNormal(); // Reset character to normal
+    setCharNormal();
 
     startBtn.disabled = false;
     repeatBtn.disabled = true;
@@ -29,101 +37,35 @@ function startGame() {
 
     gameState.isPlaying = true;
     gameState.gameOver = false;
-    gameState.sequence = generateSequence();
-    gameState.playerSequence = [];
-    gameState.correctInLevel = 0;
-
+    gameState.score = 0;
+    gameState.lives = 3;
+    gameState.consecutiveHits = 0;
+    gameState.isPlayerTurn = true;
+    
+    initRhythmGame();
     updateDisplay();
-    gameInstruction.textContent = 'Press the next matching arrow (or WASD)!';
-    gameStatus.textContent = 'Game started. Follow the sequence queue.';
+    
+    gameInstruction.textContent = 'Press matching keys when arrows reach the green target!';
+    gameStatus.textContent = 'Game started. Watch for arrows!';
     gameStatus.className = 'game-status';
-
+    
     setCharNormal();
-
+    
     startBtn.disabled = true;
     repeatBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = false);
-
-    showSequence();
-}
-
-function generateSequence() {
-    const sequence = [];
-    const length = Math.max(4, gameState.sequenceLength + (gameState.difficulty - 1));
-
-    for (let i = 0; i < length; i++) {
-        const randomDirection = arrowDirections[Math.floor(Math.random() * arrowDirections.length)];
-        sequence.push(randomDirection);
-    }
-
-    return sequence;
-}
-
-function showSequence() {
-    if (!gameState.sequence.length) {
-        gameState.sequence = generateSequence();
-    }
-
-    renderSequenceDisplay();
-    gameState.isShowingSequence = false;
-    gameState.isPlayerTurn = true;
-    gameInstruction.textContent = 'Hit the first arrow shown in the queue.';
-    gameStatus.textContent = 'Sequence is fixed until you press a key.';
-    gameStatus.className = 'game-status';
-}
-
-function highlightSequenceArrow(index) {
-    const arrowElements = document.querySelectorAll('.sequence-arrow');
-    arrowElements.forEach(arrow => arrow.classList.remove('active'));
-    if (arrowElements[index]) {
-        arrowElements[index].classList.add('active');
-    }
+    
+    startRhythmGame();
 }
 
 function handleArrowClick(direction) {
-    if (!gameState.isPlayerTurn || !gameState.isPlaying) return;
-
-    gameState.lastKeyPress = direction;
-
-    const expectedDirection = gameState.sequence[0];
-    const isCorrect = direction === expectedDirection;
-
-    if (!isCorrect) {
-        setCharSad();
-        gameState.lives--;
-
-        gameInstruction.textContent = 'Wrong key.';
-        gameStatus.textContent = `Wrong! Expected ${arrowIcons[expectedDirection]}. Lives: ${gameState.lives}`;
-        gameStatus.className = 'game-status error';
-        updateDisplay();
-
-        if (gameState.lives <= 0) {
-            gameOver();
-            return;
-        }
-    } else {
-        setCharHappy();
-        gameState.score += 10 * gameState.difficulty;
-        gameState.correctInLevel++;
-
-        const levelTarget = getLevelTarget();
-        if (gameState.correctInLevel >= levelTarget) {
-            gameState.currentLevel++;
-            gameState.correctInLevel = 0;
-            gameInstruction.textContent = 'Level up! Keep going.';
-            gameStatus.textContent = `Great! Welcome to Level ${gameState.currentLevel}.`;
-        } else {
-            gameInstruction.textContent = 'Correct! Hit the next arrow.';
-            gameStatus.textContent = 'Nice move. Sequence shifted forward.';
-        }
-        gameStatus.className = 'game-status success';
-        updateDisplay();
-    }
-
-    advanceSequenceWindow();
+    // Call the rhythm game hit handler
+    handleRhythmHit(direction);
 }
 
 function gameOver() {
+    stopRhythmGame();
+
     gameState.isPlaying = false;
     gameState.gameOver = true;
     gameState.isPlayerTurn = false;
@@ -140,49 +82,301 @@ function gameOver() {
     arrowButtons.forEach(btn => btn.disabled = true);
 }
 
-function getLevelTarget() {
-    return Math.max(4, gameState.sequenceLength + (gameState.difficulty - 1));
-}
-
-function renderSequenceDisplay() {
-    clearSequenceDisplay();
-    gameState.sequence.forEach((direction, index) => {
-        const arrowElement = document.createElement('div');
-        arrowElement.className = 'sequence-arrow';
-        if (index === 0) {
-            arrowElement.classList.add('active');
-        }
-        arrowElement.textContent = arrowIcons[direction];
-        sequenceDisplay.appendChild(arrowElement);
-    });
-}
-
-function advanceSequenceWindow() {
-    const arrowElements = Array.from(document.querySelectorAll('.sequence-arrow'));
-    arrowElements.forEach((arrow, index) => {
-        arrow.classList.add('shifting');
-        if (index === 0) {
-            arrow.classList.add('shift-out');
-        } else {
-            arrow.classList.add('shift-left');
-        }
-    });
-
-    const shiftDuration = 180;
-    setTimeout(() => {
-        gameState.sequence.shift();
-        const randomDirection = arrowDirections[Math.floor(Math.random() * arrowDirections.length)];
-        gameState.sequence.push(randomDirection);
-        renderSequenceDisplay();
-    }, shiftDuration);
-}
-
-function clearSequenceDisplay() {
-    sequenceDisplay.innerHTML = '';
-}
-
 function updateDisplay() {
     levelDisplay.textContent = gameState.currentLevel;
     scoreDisplay.textContent = gameState.score;
     livesDisplay.textContent = gameState.lives;
+}
+
+// ===== RHYTHM GAME FUNCTIONS =====
+
+// Initialize rhythm game variables
+function initRhythmGame() {
+    gameState.activeArrows = [];
+    gameState.arrowSpeed = 3; // pixels per frame
+    gameState.baseSpawnInterval = 2000; // 2 seconds
+    gameState.currentSpawnInterval = 2000;
+    gameState.lastSpawnTime = 0;
+    gameState.targetPosition = 30; // Left target position (30px from left)
+    gameState.perfectZoneStart = 15; // Perfect hit zone (15-35px)
+    gameState.perfectZoneEnd = 35;
+    gameState.goodZoneStart = 0; // Good hit zone (0-50px)
+    gameState.goodZoneEnd = 50;
+    gameState.animationFrame = null;
+    gameState.arrowCount = 0;
+    gameState.consecutiveHits = 0;
+    gameState.lastHitAccuracy = '';
+}
+
+// Start the rhythm game loop
+function startRhythmGame() {
+    if (gameState.animationFrame) {
+        cancelAnimationFrame(gameState.animationFrame);
+    }
+    
+    gameState.activeArrows = [];
+    gameState.lastSpawnTime = performance.now();
+    gameState.currentSpawnInterval = gameState.baseSpawnInterval;
+    
+    // Clear any existing arrows from display
+    clearMovingArrows();
+    
+    // Start the game loop
+    function gameLoop(currentTime) {
+        if (!gameState.isPlaying || gameState.gameOver) {
+            return;
+        }
+        
+        // Check if it's time to spawn a new arrow
+        if (currentTime - gameState.lastSpawnTime >= gameState.currentSpawnInterval) {
+            spawnArrow();
+            gameState.lastSpawnTime = currentTime;
+            
+            // Randomize next spawn interval (between 1.5 and 3 seconds)
+            const variation = 500; // 0.5 second variation
+            gameState.currentSpawnInterval = gameState.baseSpawnInterval + 
+                (Math.random() * variation * 2 - variation);
+        }
+        
+        // Update all arrow positions
+        updateArrowPositions();
+        
+        // Continue the loop
+        gameState.animationFrame = requestAnimationFrame(gameLoop);
+    }
+    
+    gameState.animationFrame = requestAnimationFrame(gameLoop);
+}
+
+// Spawn a new arrow
+function spawnArrow() {
+    const directions = ['up', 'down', 'left', 'right'];
+    const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+    const arrowIcons = {
+        'up': '↑',
+        'down': '↓',
+        'left': '←',
+        'right': '→'
+    };
+    
+    // Create arrow element
+    const arrowElement = document.createElement('div');
+    arrowElement.className = `moving-arrow ${randomDirection}`;
+    arrowElement.textContent = arrowIcons[randomDirection];
+    arrowElement.dataset.direction = randomDirection;
+    arrowElement.dataset.id = `arrow-${Date.now()}-${gameState.arrowCount++}`;
+    
+    // Position at the right edge
+    const displayWidth = sequenceDisplay.offsetWidth;
+    arrowElement.style.left = `${displayWidth - 80}px`; // 80px from right
+    
+    sequenceDisplay.appendChild(arrowElement);
+    
+    // Add to active arrows array
+    gameState.activeArrows.push({
+        id: arrowElement.dataset.id,
+        element: arrowElement,
+        direction: randomDirection,
+        left: displayWidth - 80,
+        width: 60,
+        isActive: true,
+        spawnedAt: Date.now()
+    });
+}
+
+// Update all arrow positions
+function updateArrowPositions() {
+    const displayWidth = sequenceDisplay.offsetWidth;
+    const targetZone = document.querySelector('.target-zone');
+    
+    for (let i = gameState.activeArrows.length - 1; i >= 0; i--) {
+        const arrow = gameState.activeArrows[i];
+        
+        // Move arrow left
+        arrow.left -= gameState.arrowSpeed;
+        arrow.element.style.left = `${arrow.left}px`;
+        
+        // Check if arrow is in hit zones
+        const arrowRight = arrow.left + arrow.width;
+        const arrowCenter = arrow.left + (arrow.width / 2);
+        
+        // Remove classes
+        arrow.element.classList.remove('in-hit-zone', 'in-perfect-zone');
+        
+        // Check if in perfect zone (closer to target)
+        if (arrowCenter >= gameState.perfectZoneStart && arrowCenter <= gameState.perfectZoneEnd) {
+            arrow.element.classList.add('in-perfect-zone');
+            if (targetZone) targetZone.classList.add('perfect-ready');
+        }
+        // Check if in good zone
+        else if (arrowCenter >= gameState.goodZoneStart && arrowCenter <= gameState.goodZoneEnd) {
+            arrow.element.classList.add('in-hit-zone');
+        }
+        
+        // Check if arrow passed the target (missed)
+        if (arrowRight < gameState.goodZoneStart) {
+            // Arrow passed without being hit
+            arrow.element.classList.add('hit-miss');
+            gameState.consecutiveHits = 0;
+            
+            // Reduce life or add miss penalty
+            gameState.lives = Math.max(0, gameState.lives - 1);
+            updateDisplay();
+            
+            // Show miss text
+            showHitFeedback('MISS', '#f44336', arrow.left, arrow.element.offsetTop);
+            
+            // Remove arrow after animation
+            setTimeout(() => {
+                if (arrow.element && arrow.element.parentNode) {
+                    arrow.element.remove();
+                }
+            }, 300);
+            
+            gameState.activeArrows.splice(i, 1);
+            
+            // Check game over
+            if (gameState.lives <= 0) {
+                gameOver();
+            }
+        }
+    }
+    
+    // Remove perfect-ready class if no arrows in perfect zone
+    if (targetZone) {
+        const hasPerfectArrow = gameState.activeArrows.some(arrow => {
+            const arrowCenter = arrow.left + (arrow.width / 2);
+            return arrowCenter >= gameState.perfectZoneStart && arrowCenter <= gameState.perfectZoneEnd;
+        });
+        
+        if (!hasPerfectArrow) {
+            targetZone.classList.remove('perfect-ready');
+        }
+    }
+}
+
+// Handle arrow hit (called from handleArrowClick)
+function handleRhythmHit(direction) {
+    if (!gameState.isPlayerTurn || !gameState.isPlaying) return;
+    
+    // Find arrows in hit zone
+    const arrowsInZone = gameState.activeArrows.filter(arrow => {
+        const arrowCenter = arrow.left + (arrow.width / 2);
+        return arrowCenter >= gameState.goodZoneStart && arrowCenter <= gameState.goodZoneEnd;
+    });
+    
+    if (arrowsInZone.length === 0) {
+        // No arrow to hit
+        showHitFeedback('TOO EARLY', '#ff9800', 100, 50);
+        gameState.consecutiveHits = 0;
+        setCharSad();
+        return;
+    }
+    
+    // Find matching arrow (prioritize arrows in perfect zone)
+    let hitArrow = arrowsInZone.find(arrow => 
+        arrow.direction === direction && 
+        (arrow.left + (arrow.width / 2) >= gameState.perfectZoneStart)
+    );
+    
+    // If no perfect match, find any matching arrow
+    if (!hitArrow) {
+        hitArrow = arrowsInZone.find(arrow => arrow.direction === direction);
+    }
+    
+    if (hitArrow) {
+        // Calculate accuracy
+        const arrowCenter = hitArrow.left + (hitArrow.width / 2);
+        let accuracy = 'good';
+        let points = 50;
+        let color = '#ffc107';
+        
+        if (arrowCenter >= gameState.perfectZoneStart && arrowCenter <= gameState.perfectZoneEnd) {
+            accuracy = 'perfect';
+            points = 100;
+            color = '#4caf50';
+            gameState.consecutiveHits++;
+        } else {
+            points = 50;
+            color = '#ffc107';
+            gameState.consecutiveHits = Math.max(0, gameState.consecutiveHits - 1);
+        }
+        
+        // Add combo bonus
+        const combo = gameState.consecutiveHits;
+        const totalPoints = points * (1 + (combo * 0.1)); // 10% bonus per consecutive hit
+        
+        // Update score
+        gameState.score += Math.floor(totalPoints);
+        updateDisplay();
+        
+        // Visual feedback
+        hitArrow.element.classList.add(`hit-${accuracy}`);
+        showHitFeedback(
+            accuracy.toUpperCase(), 
+            color, 
+            hitArrow.left, 
+            hitArrow.element.offsetTop,
+            combo > 1 ? ` x${combo}` : ''
+        );
+        
+        // Set character happy
+        setCharHappy();
+        
+        // Update game status
+        gameStatus.textContent = `${accuracy.toUpperCase()}! +${Math.floor(totalPoints)} points`;
+        gameStatus.className = `game-status success`;
+        
+        // Remove arrow
+        setTimeout(() => {
+            if (hitArrow.element && hitArrow.element.parentNode) {
+                hitArrow.element.remove();
+            }
+        }, 200);
+        
+        // Remove from active array
+        gameState.activeArrows = gameState.activeArrows.filter(a => a.id !== hitArrow.id);
+        
+        // Increase difficulty based on score
+        if (gameState.score > 0 && gameState.score % 500 < 50) {
+            gameState.arrowSpeed = Math.min(8, 3 + Math.floor(gameState.score / 500));
+            gameState.baseSpawnInterval = Math.max(800, 2000 - Math.floor(gameState.score / 200) * 100);
+        }
+    } else {
+        // Wrong direction
+        showHitFeedback('WRONG KEY', '#f44336', 100, 50);
+        gameState.consecutiveHits = 0;
+        setCharSad();
+    }
+}
+
+// Show floating feedback text
+function showHitFeedback(text, color, x, y, suffix = '') {
+    const feedback = document.createElement('div');
+    feedback.className = 'score-popup';
+    feedback.textContent = text + suffix;
+    feedback.style.color = color;
+    feedback.style.left = `${x}px`;
+    feedback.style.top = `${y}px`;
+    
+    sequenceDisplay.appendChild(feedback);
+    
+    setTimeout(() => {
+        feedback.remove();
+    }, 1000);
+}
+
+// Clear all moving arrows
+function clearMovingArrows() {
+    document.querySelectorAll('.moving-arrow').forEach(el => el.remove());
+    gameState.activeArrows = [];
+}
+
+// Stop rhythm game
+function stopRhythmGame() {
+    if (gameState.animationFrame) {
+        cancelAnimationFrame(gameState.animationFrame);
+        gameState.animationFrame = null;
+    }
+    clearMovingArrows();
 }

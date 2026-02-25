@@ -44,7 +44,7 @@ function setCharSad() {
     }, 1500);
 }
 
-// Keyboard input handler (YOUR EXISTING FUNCTION - UNCHANGED)
+// Keyboard input handler
 function handleKeyPress(event) {
     // Only process keyboard if it's player's turn and game is active
     if (!gameState.isPlayerTurn || !gameState.isPlaying) {
@@ -57,7 +57,7 @@ function handleKeyPress(event) {
     // If the pressed key is mapped to a direction
     if (direction) {
         event.preventDefault(); // Prevent page scrolling
-        handleArrowClick(direction);
+        handleArrowClick(direction); // This now calls handleRhythmHit through rules.js
 
         // Also visually highlight the corresponding button
         const arrowBtn = document.querySelector(`.arrow-btn[data-direction="${direction}"]`);
@@ -67,3 +67,4 @@ function handleKeyPress(event) {
         }
     }
 }
+

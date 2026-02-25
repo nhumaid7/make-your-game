@@ -1,6 +1,6 @@
 // set up actions and event listeners for the game
 function initGame() {
-    // UPDATED: Setup event listeners for menu buttons with curtain effects
+    // Setup event listeners for menu buttons with curtain effects
     playBtn.addEventListener('click', showCharacterChooserWithCurtain);
     optionsBtn.addEventListener('click', showOptionsScreenWithCurtain);
     creditsBtn.addEventListener('click', showCreditsScreenWithCurtain);
@@ -9,19 +9,21 @@ function initGame() {
         supportBtn.addEventListener('click', supportGame);
     }
 
-    // UPDATED: Setup event listeners for back buttons with curtain effects
+    // Setup event listeners for back buttons with curtain effects
     backFromGameBtn.addEventListener('click', showMainMenuWithCurtain);
     backFromOptionsBtn.addEventListener('click', showMainMenuWithCurtain);
     backFromCreditsBtn.addEventListener('click', showMainMenuWithCurtain);
 
     // Setup game control buttons
     startBtn.addEventListener('click', startGame);
-    repeatBtn.addEventListener('click', showSequence);
+    // REMOVE or COMMENT OUT this line - repeatBtn is not used in rhythm game
+    // repeatBtn.addEventListener('click', showSequence);
+    
     arrowButtons.forEach((btn) => {
         btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
     });
 
-    // Setup keyboard listeners (main change for keyboard input)
+    // Setup keyboard listeners
     window.addEventListener('keydown', handleKeyPress);
 
     // Setup option sliders
@@ -43,16 +45,36 @@ function initGame() {
 // Options functions
 function updateSpeed() {
     gameState.speed = parseInt(speedSlider.value);
+    // In rhythm game, speed controls arrow movement speed
+    gameState.arrowSpeed = gameState.speed; // Map speed slider to arrow speed
     saveSettings();
 }
 
 function updateLength() {
     gameState.sequenceLength = parseInt(lengthSlider.value);
+    // In rhythm game, length could control spawn rate or difficulty
+    // Map to spawn interval (higher length = faster spawns)
+    gameState.baseSpawnInterval = Math.max(800, 2000 - (gameState.sequenceLength * 150));
     saveSettings();
 }
 
 function updateDifficulty() {
     gameState.difficulty = parseInt(difficultySlider.value);
+    // Map difficulty to game parameters
+    switch(gameState.difficulty) {
+        case 1: // Easy
+            gameState.arrowSpeed = 2;
+            gameState.baseSpawnInterval = 2000;
+            break;
+        case 2: // Medium
+            gameState.arrowSpeed = 3;
+            gameState.baseSpawnInterval = 1500;
+            break;
+        case 3: // Hard
+            gameState.arrowSpeed = 4;
+            gameState.baseSpawnInterval = 1000;
+            break;
+    }
     saveSettings();
 }
 
@@ -77,34 +99,26 @@ function loadSettings() {
         speedSlider.value = gameState.speed;
         lengthSlider.value = gameState.sequenceLength;
         difficultySlider.value = gameState.difficulty;
+        
+        // Apply settings to rhythm game
+        updateDifficulty(); // This will set arrowSpeed and baseSpawnInterval based on difficulty
     }
 }
 
-// Add keyboard shortcut for Start/Repeat 
+// Add keyboard shortcut for Start
 window.addEventListener('keydown', (event) => {
     if (event.code === 'Space' && gameScreen.style.display === 'flex') {
         event.preventDefault();
         if (startBtn.disabled === false) {
             startGame();
-        } else if (repeatBtn.disabled === false && !gameState.isShowingSequence) {
-            showSequence();
         }
+        // REMOVED the repeat sequence part
     }
 
-    // R key for repeat sequence
-    if (event.key === 'r' || event.key === 'R') {
-        if (repeatBtn.disabled === false && !gameState.isShowingSequence && gameScreen.style.display === 'flex') {
-            showSequence();
-        }
-    }
+    // REMOVED the R key handler for repeat sequence
 });
 
-// Other button functions 
-function supportGame() {
-    alert('Thank you for your support! \n\nIn a real game, this would redirect to a support page.');
-}
-
-// NEW: Enhanced exit function with curtain effect
+// Enhanced exit function with curtain effect
 async function exitGame() {
     if (confirm('Are you sure you want to exit Friends?')) {
         await closeCurtains();

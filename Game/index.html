@@ -75,11 +75,16 @@
                             <img src="/Game/assets/images/chandler/chandler.svg" id="char-image" class="char" alt="Character">
                         </div>
                        
-                    <!-- Arrow Treadmill Display -->
-                    <div class="sequence-display" id="sequence-display">
-                        <!-- Sequence arrows will appear here -->
-                    </div>
-                    
+                  <!-- Arrow Treadmill Display -->
+<div class="sequence-display" id="sequence-display">
+    <!-- Target zone at left end -->
+    <div class="target-zone" id="targetZone">
+        <div class="target-arrow">▶</div>
+        <div class="hit-perfect"></div>
+        <div class="hit-good"></div>
+    </div>
+    <!-- Moving arrows will be dynamically added here -->
+</div>
                     <!-- Player Controls -->
                     <div class="controls">
                         <p class="game-instruction" id="game-instruction">Watch the sequence, then repeat it!</p>
@@ -193,7 +198,7 @@
         
     </div>
 </div>
-    <script src="/Game/js/state.js"></script>
+    <script src="/state.js"></script>
     <script src="/Game/js/navigation.js"></script>
     <script src="/Game/js/controls.js"></script>
     <script src="/Game/js/rules.js"></script>

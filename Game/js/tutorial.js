@@ -33,10 +33,6 @@ function updateTutorialUI() {
 
     tutorialStatus.textContent = 'Great! Tutorial complete.';
     startGameBtn.disabled = false;
-
-    setTimeout(() => {
-        window.location.href = '/Game/index.html?play=1';
-    }, 700);
 }
 
 window.addEventListener('keydown', (event) => {

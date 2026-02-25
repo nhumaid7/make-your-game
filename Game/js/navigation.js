@@ -1,8 +1,6 @@
 // NEW: Curtain Transition Functions
 function closeCurtains(callback) {
     return new Promise((resolve) => {
-        // Show spinner
-        if (curtainSpinner) curtainSpinner.style.display = 'block';
 
         // Fade out content
         if (pageContent) pageContent.classList.add('fade-out');
@@ -28,9 +26,6 @@ function openCurtains() {
 
         // Wait for curtain animation
         setTimeout(() => {
-            // Hide spinner
-            if (curtainSpinner) curtainSpinner.style.display = 'none';
-
             // Fade in content
             if (pageContent) pageContent.classList.remove('fade-out');
             resolve();
@@ -76,6 +71,8 @@ async function showCharacterChooserWithCurtain() {
 
 // Screen navigation functions 
 function showMainMenu() {
+
+    stopRhythmGame(); // Ensure rhythm game is stopped when returning to main menu
     mainMenu.style.display = 'flex';
     gameScreen.style.display = 'none';
     optionsScreen.style.display = 'none';
