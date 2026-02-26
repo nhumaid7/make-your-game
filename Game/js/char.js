@@ -1,11 +1,59 @@
 // map of character name to image path
 const characters = [
-    { name: 'Chandler', image: '/Game/assets/images/chandler/chandler.svg', nameImage: '/Game/assets/images/char/chandler btn.png' },
-    { name: 'Joey', image: '/Game/assets/images/joey/joey.svg', nameImage: '/Game/assets/images/char/joey btn.png' },
-    { name: 'Monica', image: '/Game/assets/images/monica/monica.svg', nameImage: '/Game/assets/images/char/monica btn.png' },
-    { name: 'Phoebe', image: '/Game/assets/images/phoebe/phoebe.svg', nameImage: '/Game/assets/images/char/phoebe btn.png' },
-    { name: 'Rachel', image: '/Game/assets/images/rachel/rachel.svg', nameImage: '/Game/assets/images/char/rachel btn.png' },
-    { name: 'Ross', image: '/Game/assets/images/ross/ross.svg', nameImage: '/Game/assets/images/char/ross btn.png' }
+    {
+        name: 'Chandler',
+        image: '/Game/assets/images/chandler/chandler.svg',
+        imageSelect: '/Game/assets/images/chandler/chandler.svg',
+        imageRight1: '/Game/assets/images/chandler/chandler 1.svg',
+        imageRight2: '/Game/assets/images/chandler/chandler 2.svg',
+        imageWrong: '/Game/assets/images/chandler/chandler 0.svg',
+        nameImage: '/Game/assets/images/char/chandler btn.png'
+    },
+    {
+        name: 'Joey',
+        image: '/Game/assets/images/joey/joey.svg',
+        imageSelect: '/Game/assets/images/joey/joey.svg',
+        imageRight1: '/Game/assets/images/joey/joey 1.svg',
+        imageRight2: '/Game/assets/images/joey/joey 2.svg',
+        imageWrong: '/Game/assets/images/joey/joey 0.svg',
+        nameImage: '/Game/assets/images/char/joey btn.png'
+    },
+    {
+        name: 'Monica',
+        image: '/Game/assets/images/monica/monica.svg',
+        imageSelect: '/Game/assets/images/monica/monica.svg',
+        imageRight1: '/Game/assets/images/monica/monica 1.svg',
+        imageRight2: '/Game/assets/images/monica/monica 2.svg',
+        imageWrong: '/Game/assets/images/monica/monica 0.svg',
+        nameImage: '/Game/assets/images/char/monica btn.png'
+    },
+    {
+        name: 'Phoebe',
+        image: '/Game/assets/images/phoebe/phoebe.svg',
+        imageSelect: '/Game/assets/images/phoebe/phoebe.svg',
+        imageRight1: '/Game/assets/images/phoebe/phoebe 1.svg',
+        imageRight2: '/Game/assets/images/phoebe/phoebe 2.svg',
+        imageWrong: '/Game/assets/images/phoebe/phoebe 0.svg',
+        nameImage: '/Game/assets/images/char/phoebe btn.png'
+    },
+    {
+        name: 'Rachel',
+        image: '/Game/assets/images/rachel/rachel.svg',
+        imageSelect: '/Game/assets/images/rachel/rachel.svg',
+        imageRight1: '/Game/assets/images/rachel/rachel 1.svg',
+        imageRight2: '/Game/assets/images/rachel/rachel 2.svg',
+        imageWrong: '/Game/assets/images/rachel/rachel 0.svg',
+        nameImage: '/Game/assets/images/char/rachel btn.png'
+    },
+    {
+        name: 'Ross',
+        image: '/Game/assets/images/ross/ross.svg',
+        imageSelect: '/Game/assets/images/ross/ross.svg',
+        imageRight1: '/Game/assets/images/ross/ross 1.svg',
+        imageRight2: '/Game/assets/images/ross/ross 2.svg',
+        imageWrong: '/Game/assets/images/ross/ross 0.svg',
+        nameImage: '/Game/assets/images/char/ross btn.png'
+    }
 ];
 
 // current selected character index
@@ -22,7 +70,7 @@ const chooseBtn = document.getElementById('chooseBtn');
 // render the current character
 function renderCharacter() {
     const selected = characters[current];
-    characterImage.src = selected.image;
+    characterImage.src = selected.imageSelect;
     characterImage.alt = selected.name;
     characterNameImage.src = selected.nameImage;
     characterNameImage.alt = selected.name;

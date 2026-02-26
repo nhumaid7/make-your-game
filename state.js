@@ -17,9 +17,14 @@ const gameState = {
     charState: 'normal', // normal, happy, sad
     lastKeyPress: null,
     keyPressTimeout: null,
+    nextCorrectImage: 1,
     selectedCharacter: {
         name: 'Chandler',
-        image: '/Game/assets/images/chandler/chandler.svg'
+        image: '/Game/assets/images/chandler/chandler.svg',
+        imageSelect: '/Game/assets/images/chandler/chandler.svg',
+        imageRight1: '/Game/assets/images/chandler/chandler 1.svg',
+        imageRight2: '/Game/assets/images/chandler/chandler 2.svg',
+        imageWrong: '/Game/assets/images/chandler/chandler 0.svg'
     }
 };
 
@@ -94,13 +99,27 @@ function loadSelectedCharacter() {
 
     try {
         const parsedCharacter = JSON.parse(savedCharacter);
-        if (parsedCharacter && parsedCharacter.image) {
-            gameState.selectedCharacter = parsedCharacter;
+        if (parsedCharacter && parsedCharacter.name) {
+            const characterFolder = parsedCharacter.name.toLowerCase();
+            const baseImage = parsedCharacter.image || parsedCharacter.imageSelect || `/Game/assets/images/${characterFolder}/${characterFolder}.svg`;
+
+            gameState.selectedCharacter = {
+                ...parsedCharacter,
+                image: baseImage,
+                imageSelect: parsedCharacter.imageSelect || baseImage,
+                imageRight1: parsedCharacter.imageRight1 || `/Game/assets/images/${characterFolder}/${characterFolder} 1.svg`,
+                imageRight2: parsedCharacter.imageRight2 || `/Game/assets/images/${characterFolder}/${characterFolder} 2.svg`,
+                imageWrong: parsedCharacter.imageWrong || `/Game/assets/images/${characterFolder}/${characterFolder} 0.svg`
+            };
         }
     } catch (error) {
         gameState.selectedCharacter = {
             name: 'Chandler',
-            image: '/Game/assets/images/chandler/chandler.svg'
+            image: '/Game/assets/images/chandler/chandler.svg',
+            imageSelect: '/Game/assets/images/chandler/chandler.svg',
+            imageRight1: '/Game/assets/images/chandler/chandler 1.svg',
+            imageRight2: '/Game/assets/images/chandler/chandler 2.svg',
+            imageWrong: '/Game/assets/images/chandler/chandler 0.svg'
         };
     }
 }
