@@ -1,47 +1,56 @@
 // Character animation functions 
-function getSelectedCharacterImage() {
-    if (gameState.selectedCharacter && gameState.selectedCharacter.image) {
+function getSelectedCharacterImage(state = 'select') {
+    if (!gameState.selectedCharacter) {
+        return '/Game/assets/images/chandler/chandler.svg';
+    }
+
+    if (state === 'right1' && gameState.selectedCharacter.imageRight1) {
+        return gameState.selectedCharacter.imageRight1;
+    }
+
+    if (state === 'right2' && gameState.selectedCharacter.imageRight2) {
+        return gameState.selectedCharacter.imageRight2;
+    }
+
+    if (state === 'wrong' && gameState.selectedCharacter.imageWrong) {
+        return gameState.selectedCharacter.imageWrong;
+    }
+
+    if (gameState.selectedCharacter.imageSelect) {
+        return gameState.selectedCharacter.imageSelect;
+    }
+
+    if (gameState.selectedCharacter.image) {
         return gameState.selectedCharacter.image;
     }
+
     return '/Game/assets/images/chandler/chandler.svg';
 }
 
 function setCharNormal() {
     gameState.charState = 'normal';
-    charImage.src = getSelectedCharacterImage();
+    gameState.nextCorrectImage = 1;
+    charImage.src = getSelectedCharacterImage('select');
     charImage.alt = `${gameState.selectedCharacter.name || 'Character'} (Normal)`;
 }
 
 function setCharHappy() {
     gameState.charState = 'happy';
-    charImage.src = getSelectedCharacterImage();
-    charImage.alt = `${gameState.selectedCharacter.name || 'Character'} (Happy)`;
-
-    // Reset to normal after 1 second
-    if (gameState.keyPressTimeout) {
-        clearTimeout(gameState.keyPressTimeout);
+    if (gameState.nextCorrectImage === 2) {
+        charImage.src = getSelectedCharacterImage('right2');
+        gameState.nextCorrectImage = 1;
+    } else {
+        charImage.src = getSelectedCharacterImage('right1');
+        gameState.nextCorrectImage = 2;
     }
-    gameState.keyPressTimeout = setTimeout(() => {
-        if (gameState.isPlaying && !gameState.gameOver) {
-            setCharNormal();
-        }
-    }, 1000);
+    charImage.alt = `${gameState.selectedCharacter.name || 'Character'} (Happy)`;
 }
 
 function setCharSad() {
     gameState.charState = 'sad';
-    charImage.src = getSelectedCharacterImage();
+    gameState.nextCorrectImage = 1;
+    charImage.src = getSelectedCharacterImage('wrong');
     charImage.alt = `${gameState.selectedCharacter.name || 'Character'} (Sad)`;
-
-    // Reset to normal after 1.5 seconds
-    if (gameState.keyPressTimeout) {
-        clearTimeout(gameState.keyPressTimeout);
-    }
-    gameState.keyPressTimeout = setTimeout(() => {
-        if (gameState.isPlaying && !gameState.gameOver) {
-            setCharNormal();
-        }
-    }, 1500);
 }
 
 // Keyboard input handler (YOUR EXISTING FUNCTION - UNCHANGED)
