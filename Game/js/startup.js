@@ -16,9 +16,6 @@ function initGame() {
 
     // Setup game control buttons
     startBtn.addEventListener('click', startGame);
-    // REMOVE or COMMENT OUT this line - repeatBtn is not used in rhythm game
-    // repeatBtn.addEventListener('click', showSequence);
-    
     arrowButtons.forEach((btn) => {
         btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
     });
@@ -112,10 +109,8 @@ window.addEventListener('keydown', (event) => {
         if (startBtn.disabled === false) {
             startGame();
         }
-        // REMOVED the repeat sequence part
+        
     }
-
-    // REMOVED the R key handler for repeat sequence
 });
 
 // Enhanced exit function with curtain effect

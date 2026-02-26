@@ -69,8 +69,17 @@ async function showCharacterChooserWithCurtain() {
     await openCurtains();
 }
 
+
 // Screen navigation functions 
 function showMainMenu() {
+    const hud = document.getElementById('game-hud');
+    if (hud) hud.style.display = 'none';
+       document.body.style.backgroundImage =
+        "url('/Game/assets/images/mainBckground.jpg')";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+    document.body.style.backgroundRepeat = "no-repeat";
+
 
     stopRhythmGame(); // Ensure rhythm game is stopped when returning to main menu
     mainMenu.style.display = 'flex';
@@ -83,10 +92,21 @@ function showMainMenu() {
 }
 
 function showGameScreen() {
+    const hud = document.getElementById('game-hud');
+    if (hud) hud.style.display = 'flex';
+    
+        document.body.style.backgroundImage =
+        "url('/Game/assets/images/gameScreenBG.jpg')";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+    document.body.style.backgroundRepeat = "no-repeat";
+
+
     mainMenu.style.display = 'none';
     gameScreen.style.display = 'flex';
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'none';
+   
 
     // Add keyboard listener when game screen is active
     window.addEventListener('keydown', handleKeyPress);

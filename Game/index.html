@@ -9,6 +9,18 @@
 </head>
 <body>
 
+    <div class="game-hud" id="game-hud" style="display:none;">
+  <button class="back-btn" id="back-from-game">
+    <i class="fas fa-arrow-left"></i> Back to Menu
+  </button>
+
+  <div class="stats">
+    <div class="stat">Level: <span id="level">1</span></div>
+    <div class="stat">Score: <span id="score">0</span></div>
+    <div class="stat">Lives: <span id="lives">3</span></div>
+  </div>
+</div>
+
      <!-- Curtain Transition Effect -->
     <div class="curtain-overlay" id="curtainOverlay">
         <div class="curtain-panel left" id="curtainTop">
@@ -31,6 +43,7 @@
         </div>
         
         <div class="content">
+            
             <!-- Main Menu -->
             <div class="main-menu" id="main-menu">
                 <h2 class="menu-title">Main Menu</h2>
@@ -58,16 +71,7 @@
             
             <!-- Game Screen -->
             <div class="game-screen" id="game-screen">
-                <div class="screen-header">
-                    <button class="back-btn" id="back-from-game">
-                        <i class="fas fa-arrow-left"></i> Back to Menu
-                    </button>
-                    <div class="stats">
-                        <div class="stat">Level: <span id="level">1</span></div>
-                        <div class="stat">Score: <span id="score">0</span></div>
-                        <div class="stat">Lives: <span id="lives">3</span></div>
-                    </div>
-                </div>
+              
                 
                 <div class="game-area">
                     <!-- In the game-area div, replace the character emoji with this: -->
@@ -89,29 +93,9 @@
                     <div class="controls">
                         <p class="game-instruction" id="game-instruction">Watch the sequence, then repeat it!</p>
                         
-                        <div class="arrow-controls">
-                            <button class="arrow-btn up" data-direction="up">
-                                <i class="fas fa-arrow-up"></i>
-                            </button>
-                            <div class="horizontal-arrows">
-                                <button class="arrow-btn left" data-direction="left">
-                                    <i class="fas fa-arrow-left"></i>
-                                </button>
-                                <button class="arrow-btn down" data-direction="down">
-                                    <i class="fas fa-arrow-down"></i>
-                                </button>
-                                <button class="arrow-btn right" data-direction="right">
-                                    <i class="fas fa-arrow-right"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
                         <div class="game-controls">
                             <button class="control-btn" id="start-btn">
                                 <i class="fas fa-play-circle"></i> Start Sequence
-                            </button>
-                            <button class="control-btn" id="repeat-btn">
-                                <i class="fas fa-redo"></i> Repeat Sequence
                             </button>
                         </div>
                     </div>

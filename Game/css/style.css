@@ -143,6 +143,15 @@ body {
     border-bottom: 3px solid #ff9966;
 }
 
+.game-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 16px;
+  position: fixed; top: 5px; left: 15px; right: 15px;
+}
 .back-btn {
     background: #ff9966;
     border: none;
@@ -164,9 +173,10 @@ body {
 
 .stat {
     background: #fff9e6;
-    padding: 10px 15px;
+    padding: 10px 50px;
     border-radius: 10px;
     border: 2px solid #ffcc33;
+    
 }
 
 .game-area {
@@ -381,19 +391,8 @@ body {
     gap: 15px;
 }
 
-.arrow-btn {
-    width: 100px;
-    height: 100px;
-    border: none;
-    border-radius: 20px;
-    font-size: 3.5rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.1s;
-    box-shadow: 0 7px 0 #5a3a1e;
-}
+
+
 
 .arrow-btn:active {
     transform: translateY(5px);

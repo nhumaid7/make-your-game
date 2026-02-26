@@ -29,6 +29,7 @@ const gameScreen = document.getElementById('game-screen');
 const optionsScreen = document.getElementById('options-screen');
 const creditsScreen = document.getElementById('credits-screen');
 
+
 const playBtn = document.getElementById('play-btn');
 const optionsBtn = document.getElementById('options-btn');
 const creditsBtn = document.getElementById('credits-btn');
@@ -48,7 +49,6 @@ const gameStatus = document.getElementById('game-status');
 const charImage = document.getElementById('char-image');
 
 const startBtn = document.getElementById('start-btn');
-const repeatBtn = document.getElementById('repeat-btn');
 const arrowButtons = document.querySelectorAll('.arrow-btn');
 
 const speedSlider = document.getElementById('speed-slider');

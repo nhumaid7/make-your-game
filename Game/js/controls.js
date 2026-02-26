@@ -59,12 +59,7 @@ function handleKeyPress(event) {
         event.preventDefault(); // Prevent page scrolling
         handleArrowClick(direction); // This now calls handleRhythmHit through rules.js
 
-        // Also visually highlight the corresponding button
-        const arrowBtn = document.querySelector(`.arrow-btn[data-direction="${direction}"]`);
-        if (arrowBtn) {
-            arrowBtn.classList.add('keyboard-press');
-            setTimeout(() => arrowBtn.classList.remove('keyboard-press'), 200);
-        }
+
     }
 }
 

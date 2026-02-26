@@ -28,7 +28,6 @@ function resetGame() {
     setCharNormal();
 
     startBtn.disabled = false;
-    repeatBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = true);
 }
 
@@ -52,7 +51,6 @@ function startGame() {
     setCharNormal();
     
     startBtn.disabled = true;
-    repeatBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = false);
     
     startRhythmGame();
@@ -78,7 +76,6 @@ function gameOver() {
     gameStatus.className = 'game-status error';
 
     startBtn.disabled = false;
-    repeatBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = true);
 }
 
