@@ -68,7 +68,11 @@ async function showCharacterChooserWithCurtain() {
     window.location.href = '/Game/templtes/char.html';
     await openCurtains();
 }
-
+async function showTutorialWithCurtain()   {
+    await closeCurtains();
+    window.location.href = '/Game/tutorial.html';
+    await openCurtains();
+} 
 
 // Screen navigation functions 
 function showMainMenu() {
@@ -129,4 +133,32 @@ function showCreditsScreen() {
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'flex';
     window.removeEventListener('keydown', handleKeyPress);
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const curtainTop = document.getElementById("curtainTop");
+    const curtainBottom = document.getElementById("curtainBottom");
+
+    // Small delay so animation feels smooth
+    setTimeout(() => {
+        curtainTop.classList.remove("open");
+        curtainBottom.classList.remove("open");
+    }, 100);
+});
+
+
+const backBtn = document.getElementById("backToMenuBtn");
+
+if (backBtn) {
+  backBtn.addEventListener("click", function () {
+    const curtainTop = document.getElementById("curtainTop");
+    const curtainBottom = document.getElementById("curtainBottom");
+
+    if (curtainTop) curtainTop.classList.add("open");
+    if (curtainBottom) curtainBottom.classList.add("open");
+
+    setTimeout(() => {
+      window.location.href = "/Game/index.html";
+    }, 800);
+  });
 }

@@ -36,80 +36,66 @@
 
 
 <div class="page-content" id="pageContent">
-    <div class="game-container">
-        <div class="header">
-            <h1>Friends</h1>
-            <p>Match the arrow sequence!</p>
-        </div>
-        
-        <div class="content">
-            
-            <!-- Main Menu -->
-            <div class="main-menu" id="main-menu">
-                <h2 class="menu-title">Main Menu</h2>
-                <div class="menu-options">
-                    <button class="menu-btn" id="play-btn">
-                        <span>Play</span>
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="menu-btn" id="options-btn">
-                        <span>Options</span>
-                        <i class="fas fa-cog"></i>
-                    </button>
-                    <button class="menu-btn" id="credits-btn">
-                        <span>Credits</span>
-                        <i class="fas fa-info-circle"></i>
-                    </button>
-                    <button class="menu-btn" id="exit-btn">
-                        <span>Exit</span>
-                        <i class="fas fa-door-open"></i>
-                    </button>
-                </div>
-                
-                
-            </div>
-            
-            <!-- Game Screen -->
-            <div class="game-screen" id="game-screen">
-              
-                
-                <div class="game-area">
-                    <!-- In the game-area div, replace the character emoji with this: -->
-                        <div class="char-container">
-                            <img src="/Game/assets/images/chandler/chandler.svg" id="char-image" class="char" alt="Character">
-                        </div>
-                       
-                  <!-- Arrow Treadmill Display -->
-<div class="sequence-display" id="sequence-display">
-    <!-- Target zone at left end -->
-    <div class="target-zone" id="targetZone">
-        <div class="target-arrow">▶</div>
-        <div class="hit-perfect"></div>
-        <div class="hit-good"></div>
+
+  <!-- Main Menu -->
+  <div class="main-menu" id="main-menu">
+    <h2 class="menu-title">Main Menu</h2>
+    <div class="menu-options">
+      <button class="menu-btn" id="play-btn">
+        <span>Play</span>
+        <i class="fas fa-play"></i>
+      </button>
+      <button class="menu-btn" id="options-btn">
+        <span>Options</span>
+        <i class="fas fa-cog"></i>
+      </button>
+      <button class="menu-btn" id="credits-btn">
+        <span>Credits</span>
+        <i class="fas fa-info-circle"></i>
+      </button>
+      <button class="menu-btn" id="exit-btn">
+        <span>Exit</span>
+        <i class="fas fa-door-open"></i>
+      </button>
     </div>
-    <!-- Moving arrows will be dynamically added here -->
-</div>
-                    <!-- Player Controls -->
-                    <div class="controls">
-                        <p class="game-instruction" id="game-instruction">Watch the sequence, then repeat it!</p>
-                        
-                        <div class="game-controls">
-                            <button class="control-btn" id="start-btn">
-                                <i class="fas fa-play-circle"></i> Start Sequence
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Game Status -->
-                    <div class="game-status" id="game-status">
-                        Ready to play!
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Options Screen -->
-            <div class="options-screen" id="options-screen">
-                <div class="screen-header">
+  </div>
+
+  <!-- Game Screen -->
+  <div class="game-screen" id="game-screen">
+    <div class="game-ui">
+
+      <!-- Character centered -->
+      <div class="char-container">
+        <img src="/Game/assets/images/chandler/chandler.svg" id="char-image" class="char" alt="Character">
+      </div>
+
+      <!-- Full-width treadmill -->
+      <div class="sequence-display" id="sequence-display">
+        <div class="target-zone" id="targetZone">
+          <div class="target-arrow">▶</div>
+          <div class="hit-perfect"></div>
+          <div class="hit-good"></div>
+        </div>
+      </div>
+
+      <!-- HUD text + start button -->
+      <div class="game-bottom-ui">
+        <p class="game-instruction" id="game-instruction">Press SPACE to start the rhythm game!</p>
+        <div class="game-controls">
+          <button class="control-btn" id="start-btn">
+            <i class="fas fa-play-circle"></i> Start
+          </button>
+        </div>
+
+        <div class="game-status" id="game-status">Ready to play!</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Options Screen -->
+  <div class="options-screen" id="options-screen">
+ <div class="screen-header">
                     <button class="back-btn" id="back-from-options">
                         <i class="fas fa-arrow-left"></i> Back to Menu
                     </button>
@@ -144,11 +130,12 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Credits Screen -->
-            <div class="credits-screen" id="credits-screen">
-                <div class="screen-header">
+    </div>
+
+
+  <!-- Credits Screen -->
+  <div class="credits-screen" id="credits-screen">
+     <div class="screen-header">
                     <button class="back-btn" id="back-from-credits">
                         <i class="fas fa-arrow-left"></i> Back to Menu
                     </button>
@@ -176,11 +163,8 @@
                         <p>All arrow enthusiasts</p>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        
-    </div>
+  </div>
+
 </div>
     <script src="/state.js"></script>
     <script src="/Game/js/navigation.js"></script>

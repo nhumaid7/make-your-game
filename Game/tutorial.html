@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="/Game/css/style.css">
 </head>
 <body class="tutorial-page">
+    <button id="backToMenuBtn" class="back-to-menu-btn">
+    ← Back to Main Menu
+</button>
+<div class="curtain-overlay">
+    <div class="curtain-panel left open" id="curtainTop">
+        <div class="curtain-fold"></div>
+    </div>
+    <div class="curtain-panel right open" id="curtainBottom">
+        <div class="curtain-fold"></div>
+    </div>
+</div>
     <main class="tutorial-card">
         <h1 class="tutorial-title">How to Play</h1>
         <p class="tutorial-subtitle">Press each control once to finish the tutorial.</p>
@@ -35,5 +46,18 @@
     </main>
 
     <script src="/Game/js/tutorial.js"></script>
+    <script src="/Game/js/navigation.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    const curtainTop = document.getElementById("curtainTop");
+    const curtainBottom = document.getElementById("curtainBottom");
+
+    // Small delay so animation feels smooth
+    setTimeout(() => {
+        curtainTop.classList.remove("open");
+        curtainBottom.classList.remove("open");
+    }, 100);
+});
+    </script>
 </body>
 </html>

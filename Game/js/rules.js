@@ -147,38 +147,45 @@ function startRhythmGame() {
 
 // Spawn a new arrow
 function spawnArrow() {
-    const directions = ['up', 'down', 'left', 'right'];
-    const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-    const arrowIcons = {
-        'up': '↑',
-        'down': '↓',
-        'left': '←',
-        'right': '→'
-    };
-    
-    // Create arrow element
-    const arrowElement = document.createElement('div');
-    arrowElement.className = `moving-arrow ${randomDirection}`;
-    arrowElement.textContent = arrowIcons[randomDirection];
-    arrowElement.dataset.direction = randomDirection;
-    arrowElement.dataset.id = `arrow-${Date.now()}-${gameState.arrowCount++}`;
-    
-    // Position at the right edge
-    const displayWidth = sequenceDisplay.offsetWidth;
-    arrowElement.style.left = `${displayWidth - 80}px`; // 80px from right
-    
-    sequenceDisplay.appendChild(arrowElement);
-    
-    // Add to active arrows array
-    gameState.activeArrows.push({
-        id: arrowElement.dataset.id,
-        element: arrowElement,
-        direction: randomDirection,
-        left: displayWidth - 80,
-        width: 60,
-        isActive: true,
-        spawnedAt: Date.now()
-    });
+  const directions = ['up', 'down', 'left', 'right'];
+  const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+
+  // ✅ Put YOUR arrow image paths here:
+  const arrowImages = {
+    up:   '/Game/assets/images/char/up.png',
+    down: '/Game/assets/images/arrows/down.png',
+    left: "/Game/assets/images/char/prev.svg",
+    right:'/Game/assets/images/char/next.svg'
+  };
+
+  const arrowElement = document.createElement('div');
+  arrowElement.className = `moving-arrow ${randomDirection}`;
+  arrowElement.dataset.direction = randomDirection;
+  arrowElement.dataset.id = `arrow-${Date.now()}-${gameState.arrowCount++}`;
+
+  // Create image
+  const img = document.createElement('img');
+  img.src = arrowImages[randomDirection];
+  img.alt = randomDirection;
+  img.draggable = false;
+  img.className = 'arrow-img';
+
+  arrowElement.appendChild(img);
+
+  const displayWidth = sequenceDisplay.offsetWidth;
+  arrowElement.style.left = `${displayWidth - 100}px`; // start near right
+
+  sequenceDisplay.appendChild(arrowElement);
+
+  gameState.activeArrows.push({
+    id: arrowElement.dataset.id,
+    element: arrowElement,
+    direction: randomDirection,
+    left: displayWidth - 100,
+    width: 80, // IMPORTANT: match CSS image width
+    isActive: true,
+    spawnedAt: Date.now()
+  });
 }
 
 // Update all arrow positions

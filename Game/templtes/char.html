@@ -7,6 +7,15 @@
 	<link rel="stylesheet" href="/Game/css/style.css">
 </head>
 <body class="choose-char-page">
+	<!-- Curtain Transition Effect -->
+<div class="curtain-overlay">
+    <div class="curtain-panel left open" id="curtainTop">
+        <div class="curtain-fold"></div>
+    </div>
+    <div class="curtain-panel right open" id="curtainBottom">
+        <div class="curtain-fold"></div>
+    </div>
+</div>
 
 	<main class="char-scene" aria-label="Choose character">
 		<img class="char-background" src="/Game/assets/images/char/background.svg" alt="">
@@ -29,8 +38,12 @@
 			<img id="characterNameImage" alt="Selected character name">
 		</button>
 		<p class="status" id="statusText" aria-live="polite"></p>
+		<button id="backToMenuBtn" class="back-to-menu-btn">
+    ← Back to Main Menu
+</button>
 	</main>
-
+     
 	<script src="/Game/js/char.js"></script>
+    <script src="/Game/js/navigation.js"></script>
 </body>
 </html>

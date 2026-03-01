@@ -5,15 +5,17 @@
     font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
 }
 
+/* Make the page behave like a real full-screen game */
 body {
-    background: linear-gradient(135deg, #ffcc33, #ff9966);
-    min-height: 100vh;
-    display: flex ;
-    justify-content: center ;
-    align-items: center;
-    padding: 20px;
-    color: #5a3a1e;
+  margin: 0;
+  padding: 0;
+  display: block;              /* IMPORTANT: stop centering everything */
+  min-height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
+
 /* Main background for the whole page */
 body {
     background-image: url('/Game/assets/images/mainBckground.jpg'); /* Adjust path */
@@ -164,7 +166,24 @@ body {
     align-items: center;
     gap: 8px;
 }
+.back-to-menu-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 18px;
+    background: linear-gradient(to right, #ff3366, #ff9966);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #5a3a1e;
+    z-index: 10000;
+}
 
+.back-to-menu-btn:hover {
+    transform: translateY(-2px);
+}
 .stats {
     display: flex;
     gap: 20px;
@@ -272,6 +291,21 @@ body {
     transition: box-shadow 0.1s ease;
     pointer-events: none; /* So clicks pass through to buttons */
 }
+/* Moving arrow now uses an image, not text */
+.moving-arrow {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  width: 80px;
+  height: 80px;
+}
+
+.moving-arrow .arrow-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.35));
+} 
 
 .moving-arrow.up { color: #ff9966; }
 .moving-arrow.down { color: #ffcc33; }
@@ -442,7 +476,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 5px 0 #5a3a1e;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.35);
     transition: all 0.2s;
 }
 
@@ -598,16 +632,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 220px;
-    height: 220px;
-    margin: 10px auto;
+    width: 50%;
+    height: 50%;
 }
 
 .char {
     width: 100%;
     height: 100%;
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 1000px;
+    max-height: 1000px;
     object-fit: contain;
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -1058,3 +1091,86 @@ body {
     filter: drop-shadow(0 0 10px #f44336);
 }
 
+/* ===== FULLSCREEN GAME LAYOUT OVERRIDES ===== */
+
+.page-content {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Game Screen: full-screen scene */
+.game-screen {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+/* A scene container for game elements */
+.game-ui {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Big character centered on background */
+.game-screen .char-container {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  width: clamp(260px, 32vw, 520px);
+  height: clamp(260px, 32vw, 520px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.game-screen .char {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Treadmill: full width edge-to-edge */
+.game-screen .sequence-display {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 170px;
+  width: 100vw;
+  height: 140px;     /* higher than before */
+  border-radius: 0;  /* more HUD-like */
+  border-left: 0;
+  border-right: 0;
+}
+
+/* Bottom UI under treadmill */
+.game-bottom-ui {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  width: min(900px, 92vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.game-instruction {
+  font-size: 1.2rem;
+  color: white;
+  text-shadow: 0 3px 10px rgba(0,0,0,0.65);
+  text-align: center;
+  margin: 0;
+}
+
+.game-status {
+  width: 100%;
+  background: rgba(0,0,0,0.35);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.25);
+  text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}

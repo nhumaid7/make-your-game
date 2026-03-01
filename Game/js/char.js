@@ -89,7 +89,7 @@ nextBtn.addEventListener('click', function () {
     renderCharacter();
 });
 
-chooseBtn.addEventListener('click', function () {
+chooseBtn.addEventListener('click', async function () {
     const selected = characters[current];
     localStorage.setItem('friendsSelectedCharacter', JSON.stringify(selected));
     statusText.textContent = `${selected.name} selected! Loading tutorial...`;
@@ -116,5 +116,6 @@ document.addEventListener('keydown', function (event) {
         chooseBtn.click();
     }
 });
+
 
 renderCharacter();

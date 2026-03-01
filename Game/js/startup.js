@@ -11,9 +11,8 @@ function initGame() {
 
     // Setup event listeners for back buttons with curtain effects
     backFromGameBtn.addEventListener('click', showMainMenuWithCurtain);
-    backFromOptionsBtn.addEventListener('click', showMainMenuWithCurtain);
-    backFromCreditsBtn.addEventListener('click', showMainMenuWithCurtain);
-
+backFromOptionsBtn.addEventListener('click', showMainMenuWithCurtain);
+ backFromCreditsBtn.addEventListener('click', showMainMenuWithCurtain);
     // Setup game control buttons
     startBtn.addEventListener('click', startGame);
     arrowButtons.forEach((btn) => {
@@ -24,9 +23,9 @@ function initGame() {
     window.addEventListener('keydown', handleKeyPress);
 
     // Setup option sliders
-    speedSlider.addEventListener('input', updateSpeed);
-    lengthSlider.addEventListener('input', updateLength);
-    difficultySlider.addEventListener('input', updateDifficulty);
+    if (speedSlider)speedSlider.addEventListener('input', updateSpeed);
+    if (lengthSlider)lengthSlider.addEventListener('input', updateLength);
+    if(difficultySlider)difficultySlider.addEventListener('input', updateDifficulty);
 
     // Load saved settings
     loadSettings();
