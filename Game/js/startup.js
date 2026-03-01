@@ -15,6 +15,7 @@ backFromOptionsBtn.addEventListener('click', showMainMenuWithCurtain);
  backFromCreditsBtn.addEventListener('click', showMainMenuWithCurtain);
     // Setup game control buttons
     startBtn.addEventListener('click', startGame);
+    pauseBtn.addEventListener('click', togglePause);
     arrowButtons.forEach((btn) => {
         btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
     });
@@ -108,7 +109,11 @@ window.addEventListener('keydown', (event) => {
         if (startBtn.disabled === false) {
             startGame();
         }
-        
+    }
+
+    // P key toggles pause/resume when a game is active
+    if ((event.key === 'p' || event.key === 'P') && gameScreen.style.display === 'flex') {
+        if (gameState.isPlaying) togglePause();
     }
 });
 

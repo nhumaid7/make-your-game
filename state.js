@@ -9,6 +9,7 @@ const gameState = {
     isPlaying: false,
     isShowingSequence: false,
     isPlayerTurn: false,
+    gamePaused: false,
     speed: 3,
     sequenceLength: 5,
     difficulty: 1,
@@ -54,6 +55,7 @@ const gameStatus = document.getElementById('game-status');
 const charImage = document.getElementById('char-image');
 
 const startBtn = document.getElementById('start-btn');
+const pauseBtn = document.getElementById('pause-btn');
 const arrowButtons = document.querySelectorAll('.arrow-btn');
 
 const speedSlider = document.getElementById('speed-slider');

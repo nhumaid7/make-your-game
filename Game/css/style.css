@@ -394,7 +394,17 @@ body {
     box-shadow: 0 0 20px #ff9966;
     background: #ff9966;
     color: white;
-} */
+    animation: pulse-glow 1s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 15px #ff9966;
+    }
+    50% {
+        box-shadow: 0 0 25px #ff9966, 0 0 35px #ffaa44;
+    }
+}
 
 /* Controls */
 .controls {
@@ -913,7 +923,7 @@ body {
 }
 
 .sequence-arrow.shifting {
-    transition: transform 0.18s ease, opacity 0.18s ease;
+    transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
 .sequence-arrow.shift-left {

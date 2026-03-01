@@ -28,6 +28,7 @@ function resetGame() {
     setCharNormal();
 
     startBtn.disabled = false;
+    pauseBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = true);
 }
 
@@ -51,6 +52,7 @@ function startGame() {
     setCharNormal();
     
     startBtn.disabled = true;
+    pauseBtn.disabled = true;
     arrowButtons.forEach(btn => btn.disabled = false);
     
     startRhythmGame();
@@ -68,6 +70,10 @@ function gameOver() {
     gameState.gameOver = true;
     gameState.isPlayerTurn = false;
 
+    // Clear timers and animations when game ends
+    clearMoveTimer();
+    stopContinuousMovement();
+
     // CHAR SAD for game over
     setCharSad();
 
@@ -76,6 +82,8 @@ function gameOver() {
     gameStatus.className = 'game-status error';
 
     startBtn.disabled = false;
+    // allow player to pause/resume or replay the last sequence after losing
+    pauseBtn.disabled = false;
     arrowButtons.forEach(btn => btn.disabled = true);
 }
 
@@ -383,4 +391,60 @@ function stopRhythmGame() {
         gameState.animationFrame = null;
     }
     clearMovingArrows();
+}
+
+// Pause / Resume support: toggles timers and continuous movement
+function togglePause() {
+    // Only allow pausing when a game is in progress
+    if (!gameState.isPlaying) return;
+
+    if (!gameState.gamePaused) {
+        pauseGame();
+    } else {
+        resumeGame();
+    }
+}
+
+function pauseGame() {
+    gameState.gamePaused = true;
+    // stop any active timers/animations
+    clearMoveTimer();
+    stopContinuousMovement();
+
+    // disable player input while paused
+    arrowButtons.forEach(btn => btn.disabled = true);
+
+    // update UI
+    gameInstruction.textContent = 'Paused';
+    gameStatus.textContent = 'Game paused.';
+    gameStatus.className = 'game-status';
+
+    // change control button to a Resume control (keeps same element id)
+    if (pauseBtn) {
+        pauseBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
+        pauseBtn.disabled = false;
+    }
+}
+
+function resumeGame() {
+    gameState.gamePaused = false;
+
+    // restore UI and timers depending on whether it is player's turn
+    gameInstruction.textContent = gameState.isPlayerTurn ? 'Your turn.' : 'Sequence running.';
+    gameStatus.textContent = 'Resumed.';
+    gameStatus.className = 'game-status';
+
+    // restore arrow button enabled state only if it's player's turn
+    arrowButtons.forEach(btn => btn.disabled = !gameState.isPlayerTurn);
+
+    // restart timers if appropriate
+    if (gameState.isPlayerTurn) {
+        startMoveTimer();
+    }
+    restartContinuousMovement();
+
+    if (pauseBtn) {
+        pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+        pauseBtn.disabled = false;
+    }
 }
