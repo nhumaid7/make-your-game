@@ -148,17 +148,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 const backBtn = document.getElementById("backToMenuBtn");
-
+// Add event listener to back button if it exists make curtain transition when going back to menu
 if (backBtn) {
-  backBtn.addEventListener("click", function () {
-    const curtainTop = document.getElementById("curtainTop");
-    const curtainBottom = document.getElementById("curtainBottom");
+    backBtn.addEventListener("click", async function () {
+        await closeCurtains();
+        
+        showMainMenu();
+        
+        await openCurtains();
+    });
 
-    if (curtainTop) curtainTop.classList.add("open");
-    if (curtainBottom) curtainBottom.classList.add("open");
-
-    setTimeout(() => {
-      window.location.href = "/Game/index.html";
-    }, 800);
-  });
 }
