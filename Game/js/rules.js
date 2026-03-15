@@ -1,5 +1,41 @@
 // ===== RHYTHM GAME + WORKING PAUSE (merged) =====
+function loadBestScore() {
+  return parseInt(localStorage.getItem('friendsBestScore') || '0', 10);
+}
 
+function saveBestScore() {
+  const bestScore = loadBestScore();
+  if (gameState.score > bestScore) {
+    localStorage.setItem('friendsBestScore', String(gameState.score));
+    return gameState.score;
+  }
+  return bestScore;
+}
+
+function checkLevelUp() {
+  const newLevel = Math.floor(gameState.score / 1000) + 1;
+
+  if (newLevel > gameState.currentLevel) {
+    gameState.currentLevel = newLevel;
+
+    gameState.arrowSpeed = Math.min(8, gameState.arrowSpeed + 0.35);
+    gameState.baseSpawnInterval = Math.max(700, gameState.baseSpawnInterval - 120);
+
+    updateDisplay();
+    showHitFeedback(`LEVEL ${gameState.currentLevel}`, '#4caf50', 180, 80);
+
+    gameStatus.textContent = `LEVEL UP! You reached level ${gameState.currentLevel}`;
+    gameStatus.className = 'game-status success';
+  }
+}
+
+function updateRunStatus(accuracyText = '') {
+  const bestScore = loadBestScore();
+  const comboText = gameState.consecutiveHits > 1 ? ` | Combo x${gameState.consecutiveHits}` : '';
+  const accuracyPart = accuracyText ? `${accuracyText}` : 'Keep going!';
+  gameStatus.textContent = `${accuracyPart}${comboText} | Best: ${bestScore}`;
+  gameStatus.className = 'game-status success';
+}
 // Reset the game state
 function resetGame() {
   stopRhythmGame();
@@ -18,7 +54,7 @@ function resetGame() {
   clearMovingArrows();
 
   gameInstruction.textContent = 'Press SPACE to start the rhythm game!';
-  gameStatus.textContent = 'Ready to play!';
+  gameStatus.textContent = `Ready to play! Best Score: ${loadBestScore()}`;
   gameStatus.className = 'game-status';
 
   setCharNormal();
@@ -35,6 +71,10 @@ function resetGame() {
 }
 
 function startGame() {
+     if (gameState.gameOver) {
+        location.reload();
+        return;
+    }
   if (gameState.isPlaying) return;
 
   gameState.isPlaying = true;
@@ -44,12 +84,14 @@ function startGame() {
   gameState.consecutiveHits = 0;
   gameState.isPlayerTurn = true;
   gameState.gamePaused = false;
+  gameState.currentLevel = 1;
 
   initRhythmGame();
+  applyLevelSettings();
   updateDisplay();
 
   gameInstruction.textContent = 'Press matching keys when arrows reach the green target!';
-  gameStatus.textContent = 'Game started. Watch for arrows!';
+  gameStatus.textContent = `Game started. Best Score: ${loadBestScore()}`;
   gameStatus.className = 'game-status';
 
   setCharNormal();
@@ -80,8 +122,9 @@ function gameOver() {
 
   setCharSad();
 
+   const bestScore = saveBestScore();
   gameInstruction.textContent = 'Game Over!';
-  gameStatus.textContent = `Final Score: ${gameState.score}. Press SPACE to play again.`;
+  gameStatus.textContent = `Final Score: ${gameState.score} | Best Score: ${bestScore}. Press SPACE to play again.`;
   gameStatus.className = 'game-status error';
 
   startBtn.disabled = false;
@@ -101,26 +144,98 @@ function updateDisplay() {
   livesDisplay.textContent = gameState.lives;
 }
 
+function applyDifficultyWindows() {
+  switch (gameState.baseDifficulty) {
+    case 1:
+      gameState.perfectZoneStart = 10;
+      gameState.perfectZoneEnd = 42;
+      gameState.goodZoneStart = -5;
+      gameState.goodZoneEnd = 58;
+      break;
+    case 2:
+      gameState.perfectZoneStart = 15;
+      gameState.perfectZoneEnd = 35;
+      gameState.goodZoneStart = 0;
+      gameState.goodZoneEnd = 50;
+      break;
+    case 3:
+      gameState.perfectZoneStart = 18;
+      gameState.perfectZoneEnd = 30;
+      gameState.goodZoneStart = 5;
+      gameState.goodZoneEnd = 42;
+      break;
+    default:
+      gameState.perfectZoneStart = 15;
+      gameState.perfectZoneEnd = 35;
+      gameState.goodZoneStart = 0;
+      gameState.goodZoneEnd = 50;
+  }
+}
+
+function applyLevelSettings() {
+  gameState.level3TargetActive = false;
+
+  if (gameState.currentLevel === 1) {
+    gameState.arrowSpeed = gameState.baseSpeed;
+    gameState.currentSpawnInterval = gameState.baseSpawnInterval;
+    applyDifficultyWindows();
+  }
+
+  if (gameState.currentLevel === 2) {
+    gameState.arrowSpeed = gameState.baseSpeed * 2;
+    gameState.currentSpawnInterval = gameState.baseSpawnInterval;
+    applyDifficultyWindows();
+  }
+
+  if (gameState.currentLevel === 3) {
+    gameState.arrowSpeed = gameState.baseSpeed;
+    gameState.currentSpawnInterval = gameState.baseSpawnInterval;
+    gameState.level3TargetActive = true;
+    gameState.targetZoneSpeed = 2.5;
+  }
+}
+
+function checkLevelProgression() {
+  let newLevel = 1;
+
+  if (gameState.score >= 2000) {
+    newLevel = 3;
+  } else if (gameState.score >= 1000) {
+    newLevel = 2;
+  }
+
+  if (newLevel !== gameState.currentLevel) {
+    gameState.currentLevel = newLevel;
+    applyLevelSettings();
+    updateDisplay();
+
+    gameStatus.textContent = `LEVEL ${gameState.currentLevel}!`;
+    gameStatus.className = 'game-status success';
+  }
+}
+
 // ===== RHYTHM GAME CORE =====
 
 function initRhythmGame() {
   gameState.activeArrows = [];
-  gameState.arrowSpeed = gameState.arrowSpeed || 3;
-
+  gameState.arrowSpeed = gameState.baseSpeed || gameState.speed || 3;
   gameState.baseSpawnInterval = gameState.baseSpawnInterval || 2000;
   gameState.currentSpawnInterval = gameState.baseSpawnInterval;
 
   gameState.lastSpawnTime = 0;
 
-  gameState.perfectZoneStart = 15;
-  gameState.perfectZoneEnd = 35;
-  gameState.goodZoneStart = 0;
-  gameState.goodZoneEnd = 50;
+  gameState.targetZoneX = 0;
+  gameState.targetZoneDirection = 1;
+  gameState.targetZoneWidth = 60;
+  gameState.level3TargetActive = false;
+
+  applyLevelSettings();
 
   gameState.animationFrame = null;
   gameState.arrowCount = 0;
   gameState.consecutiveHits = 0;
 }
+
 
 // ✅ IMPORTANT: make the loop a top-level function so pause/resume can restart it
 function rhythmLoop(currentTime) {
@@ -141,9 +256,67 @@ function rhythmLoop(currentTime) {
       gameState.baseSpawnInterval + (Math.random() * variation * 2 - variation);
   }
 
+  updateMovingTargetZone();
   updateArrowPositions();
   gameState.animationFrame = requestAnimationFrame(rhythmLoop);
 }
+
+// Get current target zone bounds (used for hit detection)
+function getTargetZoneBounds() {
+  const targetZone = document.querySelector('.target-zone');
+
+  if (!targetZone) {
+    return {
+      goodStart: gameState.goodZoneStart,
+      goodEnd: gameState.goodZoneEnd,
+      perfectStart: gameState.perfectZoneStart,
+      perfectEnd: gameState.perfectZoneEnd
+    };
+  }
+
+  if (!gameState.level3TargetActive) {
+    return {
+      goodStart: gameState.goodZoneStart,
+      goodEnd: gameState.goodZoneEnd,
+      perfectStart: gameState.perfectZoneStart,
+      perfectEnd: gameState.perfectZoneEnd
+    };
+  }
+
+  const left = gameState.targetZoneX;
+  const width = gameState.targetZoneWidth;
+  const perfectPadding = 15;
+
+  return {
+    goodStart: left,
+    goodEnd: left + width,
+    perfectStart: left + perfectPadding,
+    perfectEnd: left + width - perfectPadding
+  };
+}
+
+function updateMovingTargetZone() {
+  const targetZone = document.querySelector('.target-zone');
+  if (!targetZone || !gameState.level3TargetActive) return;
+
+  const laneWidth = sequenceDisplay.offsetWidth;
+  const maxX = laneWidth - gameState.targetZoneWidth;
+
+  gameState.targetZoneX += gameState.targetZoneSpeed * gameState.targetZoneDirection;
+
+  if (gameState.targetZoneX <= 0) {
+    gameState.targetZoneX = 0;
+    gameState.targetZoneDirection = 1;
+  }
+
+  if (gameState.targetZoneX >= maxX) {
+    gameState.targetZoneX = maxX;
+    gameState.targetZoneDirection = -1;
+  }
+
+  targetZone.style.left = `${gameState.targetZoneX}px`;
+}
+
 
 function startRhythmGame() {
   if (gameState.animationFrame) {
@@ -167,8 +340,8 @@ function spawnArrow() {
   const arrowImages = {
     up: '/Game/assets/images/char/up.png',
     down: '/Game/assets/images/char/down.png',
-    left: '/Game/assets/images/char/prev.svg',
-    right: '/Game/assets/images/char/next.svg'
+    left: '/Game/assets/images/char/prev.png',
+    right: '/Game/assets/images/char/next.png'
   };
 
   const arrowElement = document.createElement('div');
@@ -201,6 +374,7 @@ function spawnArrow() {
 
 function updateArrowPositions() {
   const targetZone = document.querySelector('.target-zone');
+  const bounds = getTargetZoneBounds();
 
   for (let i = gameState.activeArrows.length - 1; i >= 0; i--) {
     const arrow = gameState.activeArrows[i];
@@ -213,14 +387,20 @@ function updateArrowPositions() {
 
     arrow.element.classList.remove('in-hit-zone', 'in-perfect-zone');
 
-    if (arrowCenter >= gameState.perfectZoneStart && arrowCenter <= gameState.perfectZoneEnd) {
+    if (arrowCenter >= bounds.perfectStart && arrowCenter <= bounds.perfectEnd) {
       arrow.element.classList.add('in-perfect-zone');
       if (targetZone) targetZone.classList.add('perfect-ready');
-    } else if (arrowCenter >= gameState.goodZoneStart && arrowCenter <= gameState.goodZoneEnd) {
+    } else if (arrowCenter >= bounds.goodStart && arrowCenter <= bounds.goodEnd) {
       arrow.element.classList.add('in-hit-zone');
     }
 
-    if (arrowRight < gameState.goodZoneStart) {
+    const missedFixedZone =
+      !gameState.level3TargetActive && arrowRight < bounds.goodStart;
+
+    const missedMovingZone =
+      gameState.level3TargetActive && arrowCenter < bounds.goodStart;
+
+    if (missedFixedZone || missedMovingZone) {
       arrow.element.classList.add('hit-miss');
       gameState.consecutiveHits = 0;
 
@@ -239,7 +419,7 @@ function updateArrowPositions() {
   if (targetZone) {
     const hasPerfectArrow = gameState.activeArrows.some(a => {
       const c = a.left + a.width / 2;
-      return c >= gameState.perfectZoneStart && c <= gameState.perfectZoneEnd;
+      return c >= bounds.perfectStart && c <= bounds.perfectEnd;
     });
 
     if (!hasPerfectArrow) targetZone.classList.remove('perfect-ready');
@@ -249,9 +429,11 @@ function updateArrowPositions() {
 function handleRhythmHit(direction) {
   if (!gameState.isPlayerTurn || !gameState.isPlaying || gameState.gamePaused) return;
 
+  const bounds = getTargetZoneBounds();
+
   const arrowsInZone = gameState.activeArrows.filter(a => {
     const center = a.left + a.width / 2;
-    return center >= gameState.goodZoneStart && center <= gameState.goodZoneEnd;
+    return center >= bounds.goodStart && center <= bounds.goodEnd;
   });
 
   if (arrowsInZone.length === 0) {
@@ -262,7 +444,7 @@ function handleRhythmHit(direction) {
   }
 
   let hitArrow = arrowsInZone.find(a =>
-    a.direction === direction && (a.left + a.width / 2) >= gameState.perfectZoneStart
+    a.direction === direction && (a.left + a.width / 2) >= bounds.perfectStart
   );
 
   if (!hitArrow) hitArrow = arrowsInZone.find(a => a.direction === direction);
@@ -279,7 +461,7 @@ function handleRhythmHit(direction) {
   let points = 50;
   let color = '#ffc107';
 
-  if (arrowCenter >= gameState.perfectZoneStart && arrowCenter <= gameState.perfectZoneEnd) {
+  if (arrowCenter >= bounds.perfectStart && arrowCenter <= bounds.perfectEnd) {
     accuracy = 'perfect';
     points = 100;
     color = '#4caf50';
@@ -293,6 +475,7 @@ function handleRhythmHit(direction) {
 
   gameState.score += Math.floor(totalPoints);
   updateDisplay();
+  checkLevelProgression();
 
   hitArrow.element.classList.add(`hit-${accuracy}`);
   showHitFeedback(

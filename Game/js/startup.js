@@ -1,77 +1,68 @@
-// set up actions and event listeners for the game
-function initGame() {
-    // Setup event listeners for menu buttons with curtain effects
-    playBtn.addEventListener('click', showCharacterChooserWithCurtain);
-    optionsBtn.addEventListener('click', showOptionsScreenWithCurtain);
-    creditsBtn.addEventListener('click', showCreditsScreenWithCurtain);
-    exitBtn.addEventListener('click', exitGame);
-    if (supportBtn) {
-        supportBtn.addEventListener('click', supportGame);
-    }
+function goToMainMenu() {
+    closeCurtains().then(() => {
+        window.location.href = '/Game/index.html';
+    });
+}
 
-    // Setup event listeners for back buttons with curtain effects
-    backFromGameBtn.addEventListener('click', showMainMenuWithCurtain);
-backFromOptionsBtn.addEventListener('click', showMainMenuWithCurtain);
- backFromCreditsBtn.addEventListener('click', showMainMenuWithCurtain);
-    // Setup game control buttons
-    startBtn.addEventListener('click', startGame);
-    pauseBtn.addEventListener('click', togglePause);
+function initGame() {
+    if (playBtn) playBtn.addEventListener('click', showCharacterChooserWithCurtain);
+    if (optionsBtn) optionsBtn.addEventListener('click', showOptionsScreenWithCurtain);
+    if (creditsBtn) creditsBtn.addEventListener('click', showCreditsScreenWithCurtain);
+    if (exitBtn) exitBtn.addEventListener('click', exitGame);
+    if (supportBtn) supportBtn.addEventListener('click', supportGame);
+
+    if (backFromGameBtn) backFromGameBtn.addEventListener('click', goToMainMenu);
+    if (backFromOptionsBtn) backFromOptionsBtn.addEventListener('click', goToMainMenu);
+    if (backFromCreditsBtn) backFromCreditsBtn.addEventListener('click', goToMainMenu);
+
+    if (startBtn) startBtn.addEventListener('click', startGame);
+    if (pauseBtn) pauseBtn.addEventListener('click', togglePause);
+
     arrowButtons.forEach((btn) => {
         btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
     });
 
-    // Setup keyboard listeners
     window.addEventListener('keydown', handleKeyPress);
 
-    // Setup option sliders
-    if (speedSlider)speedSlider.addEventListener('input', updateSpeed);
-    if (lengthSlider)lengthSlider.addEventListener('input', updateLength);
-    if(difficultySlider)difficultySlider.addEventListener('input', updateDifficulty);
+    if (speedSlider) speedSlider.addEventListener('input', updateSpeed);
+    if (lengthSlider) lengthSlider.addEventListener('input', updateLength);
+    if (difficultySlider) difficultySlider.addEventListener('input', updateDifficulty);
 
-    // Load saved settings
     loadSettings();
     loadSelectedCharacter();
 
     const params = new URLSearchParams(window.location.search);
-    const isPlayPage = window.location.pathname.endsWith('/Game/play.html') || window.location.pathname.endsWith('/play.html');
+    const isPlayPage =
+        window.location.pathname.endsWith('/Game/play.html') ||
+        window.location.pathname.endsWith('/play.html');
+
     if (isPlayPage || params.get('play') === '1') {
         showGameScreen();
     }
 }
+function applyPlayerSettings() {
+    gameState.baseSpeed = parseInt(gameState.speed) || 3;
+    gameState.baseDifficulty = parseInt(gameState.difficulty) || 1;
 
+    gameState.baseSpawnInterval = Math.max(800, 2000 - (gameState.sequenceLength * 150));
+    gameState.arrowSpeed = gameState.baseSpeed;
+}
 // Options functions
 function updateSpeed() {
     gameState.speed = parseInt(speedSlider.value);
-    // In rhythm game, speed controls arrow movement speed
-    gameState.arrowSpeed = gameState.speed; // Map speed slider to arrow speed
+    applyPlayerSettings();
     saveSettings();
 }
 
 function updateLength() {
     gameState.sequenceLength = parseInt(lengthSlider.value);
-    // In rhythm game, length could control spawn rate or difficulty
-    // Map to spawn interval (higher length = faster spawns)
-    gameState.baseSpawnInterval = Math.max(800, 2000 - (gameState.sequenceLength * 150));
+    applyPlayerSettings();
     saveSettings();
 }
 
 function updateDifficulty() {
     gameState.difficulty = parseInt(difficultySlider.value);
-    // Map difficulty to game parameters
-    switch(gameState.difficulty) {
-        case 1: // Easy
-            gameState.arrowSpeed = 2;
-            gameState.baseSpawnInterval = 2000;
-            break;
-        case 2: // Medium
-            gameState.arrowSpeed = 3;
-            gameState.baseSpawnInterval = 1500;
-            break;
-        case 3: // Hard
-            gameState.arrowSpeed = 4;
-            gameState.baseSpawnInterval = 1000;
-            break;
-    }
+    applyPlayerSettings();
     saveSettings();
 }
 
@@ -84,9 +75,9 @@ function saveSettings() {
     localStorage.setItem('friendsSettings', JSON.stringify(settings));
 }
 
-// load settings from localStorage
 function loadSettings() {
     const savedSettings = localStorage.getItem('friendsSettings');
+
     if (savedSettings) {
         const settings = JSON.parse(savedSettings);
         gameState.speed = settings.speed || 3;
@@ -96,12 +87,10 @@ function loadSettings() {
         speedSlider.value = gameState.speed;
         lengthSlider.value = gameState.sequenceLength;
         difficultySlider.value = gameState.difficulty;
-        
-        // Apply settings to rhythm game
-        updateDifficulty(); // This will set arrowSpeed and baseSpawnInterval based on difficulty
     }
-}
 
+    applyPlayerSettings();
+}
 // Add keyboard shortcut for Start
 window.addEventListener('keydown', (event) => {
     if (event.code === 'Space' && gameScreen.style.display === 'flex') {

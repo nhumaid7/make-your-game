@@ -13,6 +13,16 @@ const gameState = {
     speed: 3,
     sequenceLength: 5,
     difficulty: 1,
+    baseSpeed: 3,
+baseSpawnInterval: 2000,
+baseDifficulty: 1,
+level3TargetActive: false,
+targetZoneX: 0,
+targetZoneDirection: 1,
+targetZoneSpeed: 2,
+targetZoneWidth: 60,
+
+    
 
     // Character animation state
     charState: 'normal', // normal, happy, sad
@@ -45,6 +55,7 @@ const supportBtn = document.getElementById('support-btn');
 const backFromGameBtn = document.getElementById('back-from-game');
 const backFromOptionsBtn = document.getElementById('back-from-options');
 const backFromCreditsBtn = document.getElementById('back-from-credits');
+
 
 const levelDisplay = document.getElementById('level');
 const scoreDisplay = document.getElementById('score');
@@ -103,15 +114,24 @@ function loadSelectedCharacter() {
         const parsedCharacter = JSON.parse(savedCharacter);
         if (parsedCharacter && parsedCharacter.name) {
             const characterFolder = parsedCharacter.name.toLowerCase();
-            const baseImage = parsedCharacter.image || parsedCharacter.imageSelect || `/Game/assets/images/${characterFolder}/${characterFolder}.svg`;
+            const baseImage =
+                parsedCharacter.image ||
+                parsedCharacter.imageSelect ||
+                `/Game/assets/images/${characterFolder}/${characterFolder}.svg`;
 
             gameState.selectedCharacter = {
                 ...parsedCharacter,
                 image: baseImage,
                 imageSelect: parsedCharacter.imageSelect || baseImage,
-                imageRight1: parsedCharacter.imageRight1 || `/Game/assets/images/${characterFolder}/${characterFolder} 1.svg`,
-                imageRight2: parsedCharacter.imageRight2 || `/Game/assets/images/${characterFolder}/${characterFolder} 2.svg`,
-                imageWrong: parsedCharacter.imageWrong || `/Game/assets/images/${characterFolder}/${characterFolder} 0.svg`
+                imageRight1:
+                    parsedCharacter.imageRight1 ||
+                    `/Game/assets/images/${characterFolder}/${characterFolder} 1.svg`,
+                imageRight2:
+                    parsedCharacter.imageRight2 ||
+                    `/Game/assets/images/${characterFolder}/${characterFolder} 2.svg`,
+                imageWrong:
+                    parsedCharacter.imageWrong ||
+                    `/Game/assets/images/${characterFolder}/${characterFolder} 0.svg`
             };
         }
     } catch (error) {

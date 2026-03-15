@@ -2,32 +2,37 @@
 function closeCurtains(callback) {
     return new Promise((resolve) => {
 
+        const page = document.getElementById("pageContent");
+        const top = document.getElementById("curtainTop");
+        const bottom = document.getElementById("curtainBottom");
+
         // Fade out content
-        if (pageContent) pageContent.classList.add('fade-out');
+        if (page) page.classList.add('fade-out');
 
         // Close curtains
-        if (curtainTop) curtainTop.classList.add('open');
-        if (curtainBottom) curtainBottom.classList.add('open');
+        if (top) top.classList.add('open');
+        if (bottom) bottom.classList.add('open');
 
-        // Wait for curtain animation to complete
         setTimeout(() => {
             if (callback) callback();
             resolve();
-        }, 800); // Match this with CSS transition time
+        }, 800);
     });
 }
 
 // NEW: Function to open curtains (show new screen)
 function openCurtains() {
     return new Promise((resolve) => {
-        // Open curtains (remove open class to close them)
-        if (curtainTop) curtainTop.classList.remove('open');
-        if (curtainBottom) curtainBottom.classList.remove('open');
 
-        // Wait for curtain animation
+        const page = document.getElementById("pageContent");
+        const top = document.getElementById("curtainTop");
+        const bottom = document.getElementById("curtainBottom");
+
+        if (top) top.classList.remove('open');
+        if (bottom) bottom.classList.remove('open');
+
         setTimeout(() => {
-            // Fade in content
-            if (pageContent) pageContent.classList.remove('fade-out');
+            if (page) page.classList.remove('fade-out');
             resolve();
         }, 800);
     });
@@ -65,7 +70,7 @@ async function showCreditsScreenWithCurtain() {
 //char.js
 async function showCharacterChooserWithCurtain() {
     await closeCurtains();
-    window.location.href = '/Game/templtes/char.html';
+    window.location.href = '/Game/char.html';
     await openCurtains();
 }
 async function showTutorialWithCurtain()   {
@@ -147,15 +152,12 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-const backBtn = document.getElementById("backToMenuBtn");
-// Add event listener to back button if it exists make curtain transition when going back to menu
-if (backBtn) {
-    backBtn.addEventListener("click", async function () {
-        await closeCurtains();
-        
-        showMainMenu();
-        
-        await openCurtains();
-    });
+document.querySelectorAll('.back-btn, .back-to-menu-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+                console.log('game back clicked');
 
-}
+        await closeCurtains();
+        window.location.href = '/Game/index.html';
+    });
+});
+
