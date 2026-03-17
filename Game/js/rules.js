@@ -558,3 +558,37 @@ function resumeGame() {
   gameStatus.textContent = 'Back in action!';
   gameStatus.className = 'game-status';
 }
+
+function pauseGame() {
+  gameState.gamePaused = true;
+
+  arrowButtons.forEach(btn => (btn.disabled = true));
+  if (pauseBtn) {
+    pauseBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
+    pauseBtn.disabled = false;
+  }
+
+  if (pauseOverlay) pauseOverlay.style.display = 'flex';
+
+  gameInstruction.textContent = 'Paused';
+  gameStatus.textContent = 'Game paused.';
+  gameStatus.className = 'game-status';
+}
+
+function resumeGame() {
+  gameState.gamePaused = false;
+
+  arrowButtons.forEach(btn => (btn.disabled = false));
+  if (pauseBtn) {
+    pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+    pauseBtn.disabled = false;
+  }
+
+  if (pauseOverlay) pauseOverlay.style.display = 'none';
+
+  gameState.lastSpawnTime = performance.now();
+
+  gameInstruction.textContent = 'Resumed';
+  gameStatus.textContent = 'Back in action!';
+  gameStatus.className = 'game-status';
+}

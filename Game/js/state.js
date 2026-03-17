@@ -79,6 +79,10 @@ const curtainBottom = document.getElementById('curtainBottom');
 const curtainSpinner = document.getElementById('curtainSpinner');
 const pageContent = document.getElementById('pageContent');
 
+//New: Pause menu elements
+const pauseOverlay = document.getElementById('pause-overlay');
+const continueBtn = document.getElementById('continue-btn');
+const restartBtn = document.getElementById('restart-btn');
 // Keyboard mapping
 const keyMap = {
     'ArrowUp': 'up',

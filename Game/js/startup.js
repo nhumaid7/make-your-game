@@ -17,7 +17,13 @@ function initGame() {
 
     if (startBtn) startBtn.addEventListener('click', startGame);
     if (pauseBtn) pauseBtn.addEventListener('click', togglePause);
-
+    
+    if (continueBtn) continueBtn.addEventListener('click', resumeGame);
+if (restartBtn) restartBtn.addEventListener('click', () => {
+    resetGame();
+    startGame();
+    if (pauseOverlay) pauseOverlay.style.display = 'none';
+});
     arrowButtons.forEach((btn) => {
         btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
     });

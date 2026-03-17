@@ -1168,6 +1168,27 @@ body {
   border-right: 0;
 }
 
+.pause-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20000;
+}
+
+.pause-menu {
+  background: rgba(255,255,255,0.95);
+  padding: 24px;
+  border-radius: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 240px;
+}
+
 /* Bottom UI under treadmill */
 .game-bottom-ui {
   position: absolute;
