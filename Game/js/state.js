@@ -20,7 +20,7 @@ level3TargetActive: false,
 targetZoneX: 0,
 targetZoneDirection: 1,
 targetZoneSpeed: 2,
-targetZoneWidth: 60,
+targetZoneWidth: 80,
 
     
 

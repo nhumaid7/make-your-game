@@ -147,28 +147,31 @@ function updateDisplay() {
 function applyDifficultyWindows() {
   switch (gameState.baseDifficulty) {
     case 1:
-      gameState.perfectZoneStart = 10;
-      gameState.perfectZoneEnd = 42;
-      gameState.goodZoneStart = -5;
-      gameState.goodZoneEnd = 58;
+      gameState.perfectZoneStart = 0;
+      gameState.perfectZoneEnd = 80;
+      gameState.goodZoneStart = -12;
+      gameState.goodZoneEnd = 92;
       break;
+
     case 2:
-      gameState.perfectZoneStart = 15;
-      gameState.perfectZoneEnd = 35;
-      gameState.goodZoneStart = 0;
-      gameState.goodZoneEnd = 50;
+      gameState.perfectZoneStart = 5;
+      gameState.perfectZoneEnd = 75;
+      gameState.goodZoneStart = -8;
+      gameState.goodZoneEnd = 88;
       break;
+
     case 3:
-      gameState.perfectZoneStart = 18;
-      gameState.perfectZoneEnd = 30;
-      gameState.goodZoneStart = 5;
-      gameState.goodZoneEnd = 42;
+      gameState.perfectZoneStart = 10;
+      gameState.perfectZoneEnd = 70;
+      gameState.goodZoneStart = -5;
+      gameState.goodZoneEnd = 85;
       break;
+
     default:
-      gameState.perfectZoneStart = 15;
-      gameState.perfectZoneEnd = 35;
-      gameState.goodZoneStart = 0;
-      gameState.goodZoneEnd = 50;
+      gameState.perfectZoneStart = 0;
+      gameState.perfectZoneEnd = 80;
+      gameState.goodZoneStart = -12;
+      gameState.goodZoneEnd = 92;
   }
 }
 
@@ -226,7 +229,7 @@ function initRhythmGame() {
 
   gameState.targetZoneX = 0;
   gameState.targetZoneDirection = 1;
-  gameState.targetZoneWidth = 60;
+  gameState.targetZoneWidth = 80;
   gameState.level3TargetActive = false;
 
   applyLevelSettings();
@@ -285,7 +288,7 @@ function getTargetZoneBounds() {
 
   const left = gameState.targetZoneX;
   const width = gameState.targetZoneWidth;
-  const perfectPadding = 15;
+  const perfectPadding = 0;
 
   return {
     goodStart: left,
@@ -367,7 +370,7 @@ function spawnArrow() {
     element: arrowElement,
     direction: randomDirection,
     left: displayWidth - 100,
-    width: 80,
+    width: 60,
     isActive: true
   });
 }
@@ -382,15 +385,24 @@ function updateArrowPositions() {
     arrow.left -= gameState.arrowSpeed;
     arrow.element.style.left = `${arrow.left}px`;
 
+    const arrowLeft = arrow.left;
     const arrowRight = arrow.left + arrow.width;
     const arrowCenter = arrow.left + arrow.width / 2;
 
     arrow.element.classList.remove('in-hit-zone', 'in-perfect-zone');
 
-    if (arrowCenter >= bounds.perfectStart && arrowCenter <= bounds.perfectEnd) {
+    const fullyInsidePerfect =
+      arrowLeft >= bounds.perfectStart &&
+      arrowRight <= bounds.perfectEnd;
+
+    const partlyInsideGood =
+      arrowRight >= bounds.goodStart &&
+      arrowLeft <= bounds.goodEnd;
+
+    if (fullyInsidePerfect) {
       arrow.element.classList.add('in-perfect-zone');
       if (targetZone) targetZone.classList.add('perfect-ready');
-    } else if (arrowCenter >= bounds.goodStart && arrowCenter <= bounds.goodEnd) {
+    } else if (partlyInsideGood) {
       arrow.element.classList.add('in-hit-zone');
     }
 
@@ -418,11 +430,14 @@ function updateArrowPositions() {
 
   if (targetZone) {
     const hasPerfectArrow = gameState.activeArrows.some(a => {
-      const c = a.left + a.width / 2;
-      return c >= bounds.perfectStart && c <= bounds.perfectEnd;
+      const left = a.left;
+      const right = a.left + a.width;
+      return left >= bounds.perfectStart && right <= bounds.perfectEnd;
     });
 
-    if (!hasPerfectArrow) targetZone.classList.remove('perfect-ready');
+    if (!hasPerfectArrow) {
+      targetZone.classList.remove('perfect-ready');
+    }
   }
 }
 
@@ -456,19 +471,25 @@ function handleRhythmHit(direction) {
     return;
   }
 
-  const arrowCenter = hitArrow.left + hitArrow.width / 2;
-  let accuracy = 'good';
-  let points = 50;
-  let color = '#ffc107';
+const arrowLeft = hitArrow.left;
+const arrowRight = hitArrow.left + hitArrow.width;
 
-  if (arrowCenter >= bounds.perfectStart && arrowCenter <= bounds.perfectEnd) {
-    accuracy = 'perfect';
-    points = 100;
-    color = '#4caf50';
-    gameState.consecutiveHits++;
-  } else {
-    gameState.consecutiveHits = Math.max(0, gameState.consecutiveHits - 1);
-  }
+let accuracy = 'good';
+let points = 50;
+let color = '#ffc107';
+
+const isPerfect =
+  arrowLeft >= bounds.perfectStart &&
+  arrowRight <= bounds.perfectEnd;
+
+if (isPerfect) {
+  accuracy = 'perfect';
+  points = 100;
+  color = '#4caf50';
+  gameState.consecutiveHits++;
+} else {
+  gameState.consecutiveHits = Math.max(0, gameState.consecutiveHits - 1);
+}
 
   const combo = gameState.consecutiveHits;
   const totalPoints = points * (1 + combo * 0.1);
