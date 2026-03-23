@@ -84,7 +84,8 @@ function showMainMenu() {
     const hud = document.getElementById('game-hud');
     if (hud) hud.style.display = 'none';
        document.body.style.backgroundImage =
-        "url('/Game/assets/images/mainBckground.jpg')";
+        "url('/Game/assets/images/menu.jpg')";
+    // document.body.style.backgroundColor = "transparent";
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
     document.body.style.backgroundRepeat = "no-repeat";
@@ -105,7 +106,8 @@ function showGameScreen() {
     if (hud) hud.style.display = 'flex';
     
         document.body.style.backgroundImage =
-        "url('/Game/assets/images/gameScreenBG.jpg')";
+        "url('/Game/assets/images/couch.png')";
+    document.body.style.backgroundColor = "transparent";
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
     document.body.style.backgroundRepeat = "no-repeat";

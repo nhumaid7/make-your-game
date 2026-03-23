@@ -12,31 +12,29 @@
    BASE PAGE
 ========================= */
 body {
-  min-height: 100vh;
   margin: 0;
-  padding: 9px;
-  display: block;
-  background-image: url("/Game/assets/images/mainBckground.jpg");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
+  padding: 0;
+  min-height: 100vh;
+  overflow: hidden;
+  background: url("/Game/assets/images/menu.svg") center/cover fixed no-repeat;
+  background-color: transparent;
+}
+
+body.game-screen-active {
+  background-image: url("/Game/assets/images/couch.png");
 }
 
 /* =========================
    GENERIC CONTAINERS
 ========================= */
 .game-container {
+  margin: 0 auto;
+  max-width: 900px;
   width: 100%;
   height: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-  overflow: hidden;
-  border: 5px solid #ff9966;
-  border-radius: 25px;
-  background-color: rgba(255, 255, 255, 0.85);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(5px);
+  border: none;              /* remove orange frame */
+  background-color: transparent;  /* remove semi-white panel */
+  box-shadow: none;          /* remove glow */
 }
 
 .content {
@@ -97,6 +95,7 @@ body {
 .menu-title {
   padding: 3px;
   font-size: 2rem;
+  margin-top: 100px;
   text-align: center;
   color: #ff9966;
   text-shadow: 2px 2px 0 #5a3a1e;
@@ -105,17 +104,23 @@ body {
 .menu-options {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 15px;
   width: 100%;
   max-width: 400px;
+  flex-wrap: wrap;
+  margin-top: 0px;  /* Added to move buttons down */
 }
 
 .menu-btn {
+  width: 199px;
+  height: 45px;
+  font-size: 14px;
+  padding: 5px 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px;
-  font-size: 1.8rem;
   font-weight: bold;
   text-align: center;
   color: #5a3a1e;
@@ -147,6 +152,10 @@ body {
 .back-btn,
 .back-to-menu-btn,
 .control-btn {
+  width: 120px;
+  height: 35px;
+  font-size: 13px;
+  padding: 4px 8px;
   border: none;
   cursor: pointer;
   font-weight: bold;
@@ -343,7 +352,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 170px;
+  top: calc(16px + 60px); /* under .game-hud (adjust as needed) */
   width: 100vw;
   height: 140px;
   overflow: hidden;
