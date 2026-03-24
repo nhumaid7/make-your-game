@@ -179,19 +179,19 @@ function applyLevelSettings() {
   gameState.level3TargetActive = false;
 
   if (gameState.currentLevel === 1) {
-    gameState.arrowSpeed = gameState.baseSpeed;
+    gameState.arrowSpeed = (gameState.baseSpeed* 1.25);
     gameState.currentSpawnInterval = gameState.baseSpawnInterval;
     applyDifficultyWindows();
   }
 
   if (gameState.currentLevel === 2) {
-    gameState.arrowSpeed = gameState.baseSpeed * 2;
+  gameState.arrowSpeed = Math.round((gameState.baseSpeed * 1.5) * 100) / 100;
     gameState.currentSpawnInterval = gameState.baseSpawnInterval;
     applyDifficultyWindows();
   }
 
   if (gameState.currentLevel === 3) {
-    gameState.arrowSpeed = gameState.baseSpeed;
+  gameState.arrowSpeed = Math.round((gameState.baseSpeed * 1.5 ) * 100) / 100;
     gameState.currentSpawnInterval = gameState.baseSpawnInterval;
     gameState.level3TargetActive = true;
     gameState.targetZoneSpeed = 2.5;

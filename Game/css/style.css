@@ -341,19 +341,16 @@ body {
 ========================= */
 .sequence-display {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 170px;
-  width: 100vw;
+  top: 70%;
+  left: 50%;
+  width: min(760px, 78vw);
   height: 140px;
   overflow: hidden;
   padding: 0;
-  border-top: 5px solid #ffcc33;
-  border-bottom: 5px solid #ffcc33;
-  border-left: 0;
-  border-right: 0;
-  border-radius: 0;
-  background: linear-gradient(to right, #f0e6d2, #fff9e6);
+  border: 3px solid ;
+  border-color: rgba(168, 100, 15, 0.919);  border-radius: 18px;
+  background-color:  rgba(235, 225, 216, 0.958);
+  transform: translate(-50%, -50%);
 }
 
 /* =========================
@@ -362,10 +359,10 @@ body {
 .target-zone {
   position: absolute;
   top: 50%;
-  left: 3px;
+  left: 10px;
   width: 90px;
   height: 90px;
-  border: 4px solid #4caf50;
+  border: 4px solid #60aa63ca;
   border-radius: 10px;
   background: rgba(76, 175, 80, 0.15);
   transform: translateY(-50%);
@@ -545,7 +542,7 @@ body {
 }
 
 .game-instruction {
-  margin: 0;
+  margin: -15px;
   min-height: 40px;
   font-size: 1.2rem;
   font-weight: bold;
