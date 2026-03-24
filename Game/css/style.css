@@ -354,7 +354,7 @@ white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   padding-bottom: 15px;
   border-bottom: 3px solid #ff9966;
 }
@@ -644,7 +644,7 @@ white-space: nowrap;
   transform: translate(-50%, -50%); /* 🔥 perfect centering */
 
   width: 90%;
-  max-width: 700px;
+  max-width: 900px;
 
   padding: 7px 10px;
   font-size: clamp(1.3rem, 2vw, 2rem);
@@ -682,8 +682,8 @@ white-space: nowrap;
 }
 
 .game-status.error {
-  color: #f44336;
-  text-shadow: 0 0 10px #f44336;
+  color: #f11909;
+  text-shadow: 0 0 10px #1d0a09;
 }
 
 /* =========================
@@ -716,9 +716,7 @@ white-space: nowrap;
   background: rgba(255, 153, 102, 0.2);
 }
 
-/* =========================
-   OPTIONS / CREDITS
-========================= */
+
 .options-screen,
 .credits-screen {
   display: none;
@@ -732,8 +730,8 @@ white-space: nowrap;
 /* top row inside the black frame */
 .options-screen .screen-header,
 .credits-screen .screen-header {
-  width: min(340px, calc(100% - 80px));
-  margin: 0 auto 18px;
+  width: min(290px, calc(100% - 100px));
+  margin: 0 auto 10px;
   padding: 0 0 12px;
   border-bottom: 3px solid #ff9966;
 
@@ -766,18 +764,18 @@ white-space: nowrap;
 /* the card column */
 .options-list,
 .credits-list {
-  width: min(340px, calc(100% - 80px));
+  width: min(290px, calc(100% - 100px));
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 8px;
 }
 
 /* each card fits the black inner panel */
 .option-item,
 .credit-item {
   width: 100%;
-  padding: 18px 20px;
+  padding: 8px 8px; 
   border-left: 6px solid #ff9966;
   border-radius: 15px;
   background: #fff9e6;
@@ -787,8 +785,10 @@ white-space: nowrap;
 .option-title,
 .credit-title {
   margin-bottom: 10px;
-  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+  font-size: clamp(1rem, 1vw, 1.5rem);
   color: #ff9966;
+  white-space: nowrap;
+
 }
 
 /* slider row */
