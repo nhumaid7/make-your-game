@@ -106,7 +106,7 @@ function showGameScreen() {
     if (hud) hud.style.display = 'flex';
     
         document.body.style.backgroundImage =
-        "url('/Game/assets/images/couch.png')";
+        "url('/Game/assets/images/game.svg')";
     document.body.style.backgroundColor = "transparent";
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";

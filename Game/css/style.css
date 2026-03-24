@@ -16,12 +16,15 @@ body {
   padding: 0;
   min-height: 100vh;
   overflow: hidden;
-  background: url("/Game/assets/images/menu.svg") center/cover fixed no-repeat;
+  background: url("/Game/assets/images/menu.svg") center center / cover no-repeat;
   background-color: transparent;
 }
 
 body.game-screen-active {
-  background-image: url("/Game/assets/images/couch.png");
+  background-image: url("/Game/assets/images/game.svg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 /* =========================
@@ -160,6 +163,9 @@ body.game-screen-active {
   cursor: pointer;
   font-weight: bold;
   color: white;
+    white-space: nowrap;
+  min-width: 180px;      /* increase width */
+
 }
 
 .back-btn {
@@ -171,11 +177,11 @@ body.game-screen-active {
   padding: 10px 20px;
   border-radius: 10px;
   pointer-events: auto;
-  background: linear-gradient(to right, #ff3366, #ff9966);
+  background: linear-gradient(to right, #f56f15, #c3d008);
   box-shadow: 0 5px 0 #5a3a1e;
 }
 
-.back-to-menu-btn {
+/* .back-to-menu-btn {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -184,7 +190,7 @@ body.game-screen-active {
   border-radius: 12px;
   background: linear-gradient(to right, #ff3366, #ff9966);
   box-shadow: 0 5px 0 #5a3a1e;
-}
+} */
 
 .back-to-menu-btn:hover {
   transform: translateY(-2px);
@@ -197,7 +203,7 @@ body.game-screen-active {
   padding: 15px 25px;
   font-size: 1.3rem;
   border-radius: 15px;
-  background: linear-gradient(to right, #ff3366, #ff9966);
+  background: linear-gradient(to right, #f56f15, #c3d008);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
   transition: all 0.2s;
 }
@@ -223,19 +229,23 @@ body.game-screen-active {
    GAME HUD
 ========================= */
 .game-hud {
-  position: fixed;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: absolute;
+  top: 18px;
+  left: 0;
+  right: 0;
   z-index: 10001;
 
-  width: min(1100px, calc(100vw - 32px));
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
   gap: 16px;
+
+  width: min(1200px, calc(100% - 32px));
+  margin: 0 auto;
 }
+
 .stats {
+  justify-self: end;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -254,6 +264,17 @@ body.game-screen-active {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
+.back-to-menu-btn {
+  position: relative;
+  top: auto;
+  left: auto;
+  z-index: 10000;
+  padding: 10px 18px;
+  border-radius: 12px;
+  background: linear-gradient(to right, #ff3366, #ff9966);
+  box-shadow: 0 5px 0 #5a3a1e;
+}
+
 /* =========================
    GAME SCREEN LAYOUT
 ========================= */
@@ -261,14 +282,17 @@ body.game-screen-active {
   position: relative;
   display: none;
   flex-direction: column;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
 }
 
 .game-ui {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100vh;
+  padding-top: 280px;
+  padding-bottom: 150px;
 }
 
 .screen-header {
@@ -291,15 +315,17 @@ body.game-screen-active {
 
 .game-screen .char-container {
   position: absolute;
-  top: 45%;
   left: 50%;
+  top: 62%;
+  transform: translate(-50%, -50%);
+
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(260px, 32vw, 520px);
-  height: clamp(260px, 32vw, 520px);
-  margin: 0 auto 20px;
-  transform: translate(-50%, -50%);
+
+  width: clamp(260px, 30vw, 500px);
+  height: clamp(260px, 30vw, 500px);
+
   pointer-events: none;
 }
 
@@ -350,11 +376,12 @@ body.game-screen-active {
 ========================= */
 .sequence-display {
   position: absolute;
+  top: 70px;
   left: 0;
   right: 0;
-  top: calc(16px + 60px); /* under .game-hud (adjust as needed) */
-  width: 100vw;
-  height: 140px;
+
+  width: 100%;
+  height: 120px;
   overflow: hidden;
   padding: 0;
   border-top: 5px solid #ffcc33;
@@ -538,13 +565,15 @@ body.game-screen-active {
 .game-bottom-ui {
   position: absolute;
   left: 50%;
-  bottom: 30px;
+  bottom: 14px;
+  transform: translateX(-50%);
+
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  width: min(900px, 92vw);
-  transform: translateX(-50%);
+  gap: 10px;
+
+  width: min(900px, calc(100% - 32px));
 }
 
 .game-controls {
@@ -554,21 +583,34 @@ body.game-screen-active {
 }
 
 .game-instruction {
-  margin: 0;
-  min-height: 40px;
-  font-size: 1.2rem;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* 🔥 perfect centering */
+
+  width: 90%;
+  max-width: 700px;
+
+  padding: 12px 20px;
+  font-size: clamp(1.3rem, 2vw, 2rem);
   font-weight: bold;
   text-align: center;
   color: white;
-  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.65);
+
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  text-shadow: 0 3px 10px rgba(0, 0, 0, 0.7);
+  z-index: 5;
 }
 
 .game-status {
   width: 100%;
-  max-width: 600px;
+  max-width: 900px;
   min-height: 40px;
-  padding: 15px;
-  font-size: 1.5rem;
+  padding: 10px 14px;
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
   font-weight: bold;
   text-align: center;
   color: white;
@@ -1024,39 +1066,42 @@ body.game-screen-active {
    RESPONSIVE
 ========================= */
 @media (max-width: 768px) {
-  .header h1 {
-    font-size: 2.5rem;
-  }
-
-  .menu-btn {
-    padding: 15px;
-    font-size: 1.5rem;
-  }
-
-  .game-instruction {
-    font-size: 1.5rem;
-  }
-
-  .choose-char-page .nav-arrow.prev {
-    left: calc(50% - clamp(105px, 30vw, 170px));
-  }
-
-  .choose-char-page .nav-arrow.next {
-    right: calc(50% - clamp(105px, 30vw, 170px));
-  }
-
-  .choose-char-page .character-name-btn {
-    bottom: clamp(4px, 1vh, 10px);
-  }
-}
-
-@media (max-width: 768px) {
   .game-hud {
     top: 10px;
-    width: calc(100vw - 20px);
+    width: calc(100% - 20px);
+    grid-template-columns: 1fr;
     gap: 10px;
-    align-items: flex-start;
   }
+
+  .stats {
+    justify-self: stretch;
+    justify-content: center;
+  }
+
+  .stat {
+    min-width: 92px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+  }
+
+  .back-to-menu-btn {
+    justify-self: start;
+  }
+
+  .sequence-display {
+    top: 120px;
+    height: 120px;
+  }
+
+  .game-ui {
+    padding-top: 260px;
+    padding-bottom: 140px;
+  }
+
+  .game-bottom-ui {
+    width: calc(100% - 20px);
+  }
+}
 
   .stats {
     gap: 8px;
@@ -1073,4 +1118,3 @@ body.game-screen-active {
     padding: 8px 14px;
     font-size: 0.95rem;
   }
-}
