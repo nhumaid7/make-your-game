@@ -84,7 +84,7 @@ function showMainMenu() {
     const hud = document.getElementById('game-hud');
     if (hud) hud.style.display = 'none';
        document.body.style.backgroundImage =
-        "url('/Game/assets/images/menu.jpg')";
+        "url('/Game/assets/images/menuu.svg')";
     // document.body.style.backgroundColor = "transparent";
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
