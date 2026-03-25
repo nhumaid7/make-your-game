@@ -1,6 +1,9 @@
 function goToMainMenu() {
     closeCurtains().then(() => {
+        gameMusic.pause();
+        gameMusic.currentTime = 0;
         window.location.href = '/Game/index.html';
+        
     });
 }
 

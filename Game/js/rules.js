@@ -1,3 +1,8 @@
+// Game audio
+const gameMusic = new Audio('/Game/assets/sounds/friends.mp3');
+gameMusic.loop = true;
+gameMusic.volume = 0.5;
+
 // ===== RHYTHM GAME + WORKING PAUSE (merged) =====
 function loadBestScore() {
   return parseInt(localStorage.getItem('friendsBestScore') || '0', 10);
@@ -71,6 +76,10 @@ function resetGame() {
 }
 
 function startGame() {
+
+  gameMusic.currentTime = 0;
+  gameMusic.play().catch(err => console.log('Audio blocked:', err));
+
      if (gameState.gameOver) {
         location.reload();
         return;
@@ -115,6 +124,9 @@ function handleArrowClick(direction) {
 
 function gameOver() {
   stopRhythmGame();
+
+  gameMusic.pause();
+  gameMusic.currentTime = 0;
 
   gameState.isPlaying = false;
   gameState.gameOver = true;
@@ -552,11 +564,17 @@ function togglePause() {
 function pauseGame() {
   gameState.gamePaused = true;
 
+  
   arrowButtons.forEach(btn => (btn.disabled = true));
   if (pauseBtn) {
     pauseBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
     pauseBtn.disabled = false;
   }
+
+   if (pauseOverlay) pauseOverlay.style.display = 'flex';
+
+  // 🔊 PAUSE MUSIC HERE
+  gameMusic.pause();
 
   gameInstruction.textContent = 'Paused';
   gameStatus.textContent = 'Game paused.';
@@ -571,43 +589,16 @@ function resumeGame() {
     pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
     pauseBtn.disabled = false;
   }
+
+    if (pauseOverlay) pauseOverlay.style.display = 'none';
+
 
   // ✅ Reset spawn timer so it doesn't instantly spawn a bunch
   gameState.lastSpawnTime = performance.now();
 
-  gameInstruction.textContent = 'Resumed';
-  gameStatus.textContent = 'Back in action!';
-  gameStatus.className = 'game-status';
-}
+   // 🔊 RESUME MUSIC HERE
+  gameMusic.play().catch(err => console.log('Audio blocked:', err));
 
-function pauseGame() {
-  gameState.gamePaused = true;
-
-  arrowButtons.forEach(btn => (btn.disabled = true));
-  if (pauseBtn) {
-    pauseBtn.innerHTML = '<i class="fas fa-play"></i> Resume';
-    pauseBtn.disabled = false;
-  }
-
-  if (pauseOverlay) pauseOverlay.style.display = 'flex';
-
-  gameInstruction.textContent = 'Paused';
-  gameStatus.textContent = 'Game paused.';
-  gameStatus.className = 'game-status';
-}
-
-function resumeGame() {
-  gameState.gamePaused = false;
-
-  arrowButtons.forEach(btn => (btn.disabled = false));
-  if (pauseBtn) {
-    pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
-    pauseBtn.disabled = false;
-  }
-
-  if (pauseOverlay) pauseOverlay.style.display = 'none';
-
-  gameState.lastSpawnTime = performance.now();
 
   gameInstruction.textContent = 'Resumed';
   gameStatus.textContent = 'Back in action!';
