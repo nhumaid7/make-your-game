@@ -1,3 +1,11 @@
+document.addEventListener("DOMContentLoaded", () => {
+    AudioManager.playMusic(MENU_MUSIC);
+});
+
+document.addEventListener("click", () => {
+    AudioManager.playMusic(MENU_MUSIC);
+}, { once: true });
+
 const tutorialStatus = document.getElementById('tutorialStatus');
 const startGameBtn = document.getElementById('startGameBtn');
 const tutorialItems = document.querySelectorAll('.tutorial-item');

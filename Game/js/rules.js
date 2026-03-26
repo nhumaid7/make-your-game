@@ -1,7 +1,7 @@
-// Game audio
-const gameMusic = new Audio('/Game/assets/sounds/friends.mp3');
-gameMusic.loop = true;
-gameMusic.volume = 0.5;
+// // Game audio
+// const gameMusic = new Audio('/Game/assets/sounds/friends.mp3');
+// gameMusic.loop = true;
+// gameMusic.volume = 0.5;
 
 // ===== RHYTHM GAME + WORKING PAUSE (merged) =====
 function loadBestScore() {
@@ -77,8 +77,7 @@ function resetGame() {
 
 function startGame() {
 
-  gameMusic.currentTime = 0;
-  gameMusic.play().catch(err => console.log('Audio blocked:', err));
+  AudioManager.playMusic(GAME_MUSIC);
 
      if (gameState.gameOver) {
         location.reload();
@@ -125,8 +124,7 @@ function handleArrowClick(direction) {
 function gameOver() {
   stopRhythmGame();
 
-  gameMusic.pause();
-  gameMusic.currentTime = 0;
+  AudioManager.stopMusic();
 
   gameState.isPlaying = false;
   gameState.gameOver = true;
@@ -573,8 +571,8 @@ function pauseGame() {
 
    if (pauseOverlay) pauseOverlay.style.display = 'flex';
 
-  // 🔊 PAUSE MUSIC HERE
-  gameMusic.pause();
+  // pause music
+  AudioManager.pauseMusic();
 
   gameInstruction.textContent = 'Paused';
   gameStatus.textContent = 'Game paused.';
@@ -596,9 +594,8 @@ function resumeGame() {
   // ✅ Reset spawn timer so it doesn't instantly spawn a bunch
   gameState.lastSpawnTime = performance.now();
 
-   // 🔊 RESUME MUSIC HERE
-  gameMusic.play().catch(err => console.log('Audio blocked:', err));
-
+   // RESUME MUSIC HERE
+  AudioManager.resumeMusic();
 
   gameInstruction.textContent = 'Resumed';
   gameStatus.textContent = 'Back in action!';

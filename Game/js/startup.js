@@ -1,10 +1,7 @@
-function goToMainMenu() {
-    closeCurtains().then(() => {
-        gameMusic.pause();
-        gameMusic.currentTime = 0;
-        window.location.href = '/Game/index.html';
-        
-    });
+async function goToMainMenu() {
+    await closeCurtains();
+    showMainMenu();
+    await openCurtains();
 }
 
 function initGame() {
@@ -22,11 +19,13 @@ function initGame() {
     if (pauseBtn) pauseBtn.addEventListener('click', togglePause);
     
     if (continueBtn) continueBtn.addEventListener('click', resumeGame);
-if (restartBtn) restartBtn.addEventListener('click', () => {
-    resetGame();
-    startGame();
-    if (pauseOverlay) pauseOverlay.style.display = 'none';
-});
+    if (restartBtn) restartBtn.addEventListener('click', () => {
+        resetGame();
+        if (pauseOverlay) pauseOverlay.style.display = 'none';
+
+        AudioManager.stopMusic();
+        startGame();
+    });
     arrowButtons.forEach((btn) => {
         btn.addEventListener('click', () => handleArrowClick(btn.dataset.direction));
     });
@@ -128,3 +127,8 @@ async function exitGame() {
 
 // Initialize the game when the page loads
 window.addEventListener('DOMContentLoaded', initGame);
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    showMainMenu();
+});

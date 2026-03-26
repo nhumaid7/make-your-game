@@ -69,11 +69,17 @@ async function showCreditsScreenWithCurtain() {
 
 //char.js
 async function showCharacterChooserWithCurtain() {
+
+    AudioManager.playMusic(MENU_MUSIC);
+
     await closeCurtains();
     window.location.href = '/Game/char.html';
     await openCurtains();
 }
 async function showTutorialWithCurtain()   {
+
+    AudioManager.playMusic(MENU_MUSIC);
+
     await closeCurtains();
     window.location.href = '/Game/tutorial.html';
     await openCurtains();
@@ -81,6 +87,10 @@ async function showTutorialWithCurtain()   {
 
 // Screen navigation functions 
 function showMainMenu() {
+
+    AudioManager.playMusic(MENU_MUSIC);
+
+
     const hud = document.getElementById('game-hud');
     if (hud) hud.style.display = 'none';
        document.body.style.backgroundImage =
@@ -102,6 +112,8 @@ function showMainMenu() {
 }
 
 function showGameScreen() {
+
+    AudioManager.stopMusic()
     const hud = document.getElementById('game-hud');
     if (hud) hud.style.display = 'flex';
     
@@ -154,12 +166,12 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-document.querySelectorAll('.back-btn, .back-to-menu-btn').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-                console.log('game back clicked');
+// document.querySelectorAll('.back-btn, .back-to-menu-btn').forEach((btn) => {
+//     btn.addEventListener('click', async () => {
+//                 console.log('game back clicked');
 
-        await closeCurtains();
-        window.location.href = '/Game/index.html';
-    });
-});
+//         await closeCurtains();
+//         window.location.href = '/Game/index.html';
+//     });
+// });
 

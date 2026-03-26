@@ -1,3 +1,11 @@
+document.addEventListener("DOMContentLoaded", () => {
+    AudioManager.playMusic(MENU_MUSIC);
+});
+
+document.addEventListener("click", () => {
+    AudioManager.playMusic(MENU_MUSIC);
+}, { once: true });
+
 // map of character name to image path
 const characters = [
     {
