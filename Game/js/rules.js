@@ -462,6 +462,8 @@ function handleRhythmHit(direction) {
   });
 
   if (arrowsInZone.length === 0) {
+    AudioManager.glitchMusic(250);
+
     showHitFeedback('TOO EARLY', '#ff9800', 100, 50);
     gameState.consecutiveHits = 0;
     setCharSad();
@@ -475,6 +477,7 @@ function handleRhythmHit(direction) {
   if (!hitArrow) hitArrow = arrowsInZone.find(a => a.direction === direction);
 
   if (!hitArrow) {
+    AudioManager.glitchMusic(250);
     showHitFeedback('WRONG KEY', '#f44336', 100, 50);
     gameState.consecutiveHits = 0;
     setCharSad();
