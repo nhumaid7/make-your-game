@@ -1,5 +1,6 @@
 const MENU_MUSIC = "/Game/assets/sounds/menu.mp3";
 const GAME_MUSIC = "/Game/assets/sounds/friends.mp3";
+const BUTTON_SFX = "/Game/assets/sounds/button.mp3";
 
 const AudioManager = {
   audioContext: null, //main audio
@@ -126,5 +127,25 @@ const AudioManager = {
         this.connectNormalChain();
       }
     }, duration);
+  },
+
+  playButtonSfx() {
+    try {
+      this.initContext();
+      const sfx = new Audio(BUTTON_SFX);
+      sfx.volume = 0.7;
+      sfx.play().catch(() => {});
+    } catch (e) {}
   }
 };
+
+/* -----------------------------------------------
+   Global button-click sound — covers every page.
+   Fires on any <button> or .arrow-btn click.
+----------------------------------------------- */
+document.addEventListener('click', (e) => {
+  const target = e.target.closest('button, .arrow-btn, .menu-btn, .control-btn, .back-btn, .back-to-menu-btn, .nav-arrow, .character-name-btn');
+  if (target) {
+    AudioManager.playButtonSfx();
+  }
+});

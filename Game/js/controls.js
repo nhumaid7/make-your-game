@@ -66,9 +66,8 @@ function handleKeyPress(event) {
     // If the pressed key is mapped to a direction
     if (direction) {
         event.preventDefault(); // Prevent page scrolling
+        AudioManager.playButtonSfx();
         handleArrowClick(direction); // This now calls handleRhythmHit through rules.js
-
-
     }
 }
 

@@ -94,11 +94,11 @@ function showMainMenu() {
     const hud = document.getElementById('game-hud');
     if (hud) hud.style.display = 'none';
        document.body.style.backgroundImage =
-        "url('/Game/assets/images/menuu.svg')";
-    // document.body.style.backgroundColor = "transparent";
+        "url('/Game/assets/images/menu amani.svg')";
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
     document.body.style.backgroundRepeat = "no-repeat";
+    document.body.style.backgroundColor = "transparent";
 
 
     stopRhythmGame(); // Ensure rhythm game is stopped when returning to main menu
@@ -160,8 +160,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Small delay so animation feels smooth
     setTimeout(() => {
-        curtainTop.classList.remove("open");
-        curtainBottom.classList.remove("open");
+        if (curtainTop) curtainTop.classList.remove("open");
+        if (curtainBottom) curtainBottom.classList.remove("open");
     }, 100);
 });
 

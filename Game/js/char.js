@@ -74,6 +74,7 @@ const statusText = document.getElementById('statusText');
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const chooseBtn = document.getElementById('chooseBtn');
+const backToMenuBtn = document.getElementById('backToMenuBtn');
 
 // render the current character
 function renderCharacter() {
@@ -105,6 +106,12 @@ chooseBtn.addEventListener('click', async function () {
         window.location.href = '/Game/tutorial.html';
     }, 500);
 });
+
+if (backToMenuBtn) {
+    backToMenuBtn.addEventListener('click', () => {
+        window.location.href = '/Game/index.html';
+    });
+}
 
 document.addEventListener('keydown', function (event) {
     if (event.key === 'ArrowLeft') {
