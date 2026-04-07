@@ -14,7 +14,7 @@ const gameState = {
     sequenceLength: 5,
     difficulty: 1,
     baseSpeed: 3,
-baseSpawnInterval: 2000,
+baseSpawnInterval: 500,
 baseDifficulty: 1,
 level3TargetActive: false,
 targetZoneX: 0,

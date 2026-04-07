@@ -341,24 +341,25 @@ body.game-screen-active {
 .game-hud {
   position: absolute;
   top: 18px;
-  left: 0;
-  right: 0;
+  left: 16px;
+  right: auto;
   z-index: 10001;
 
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto auto;
   align-items: start;
   gap: 16px;
 
-  width: min(1200px, calc(100% - 32px));
-  margin: 0 auto;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
 }
 
 .stats {
-  justify-self: end;
+  justify-self: start;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -509,11 +510,11 @@ body.game-screen-active {
 ========================= */
 .sequence-display {
   position: absolute;
-  top: 60px;
-  left: 0;
-  right: 0;
+  top: 110px;
+  left: 50%;
+  right: auto;
 
-  width: 100%;
+  width: min(1000px, calc(100% - 56px));
   height: 120px;
   overflow: hidden;
   padding: 0;
@@ -523,6 +524,7 @@ body.game-screen-active {
   border-right: 5px solid #ffcc33;
   border-radius: 0;
   background: linear-gradient(to right, #f0e6d2, #fff9e6);
+  transform: translateX(-50%);
 }
 
 /* =========================
@@ -717,7 +719,7 @@ body.game-screen-active {
 
 .game-instruction {
   position: absolute;
-    top: 205px; /* 70px lane top + 120px lane height + 20px gap */
+    top: 260px; 
   left: 50%;
   transform: translate(-50%, -50%); /* 🔥 perfect centering */
 
@@ -1460,7 +1462,7 @@ body.game-screen-active {
 
   .stats {
     justify-self: stretch;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .stat {

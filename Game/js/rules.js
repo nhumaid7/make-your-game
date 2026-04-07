@@ -189,7 +189,7 @@ function applyLevelSettings() {
   gameState.level3TargetActive = false;
 
   if (gameState.currentLevel === 1) {
-    gameState.arrowSpeed = (gameState.baseSpeed* 1.25);
+    gameState.arrowSpeed = (gameState.baseSpeed);
     gameState.currentSpawnInterval = gameState.baseSpawnInterval;
     applyDifficultyWindows();
   }
