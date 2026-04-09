@@ -114,6 +114,7 @@ window.addEventListener('keydown', (e) => {
 const backBtn = document.getElementById('backToMenuBtn');
 if (backBtn) {
     backBtn.addEventListener('click', () => {
+        AudioManager.saveMenuPosition();
         window.location.href = '/Game/index.html';
     });
 }

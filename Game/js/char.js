@@ -103,12 +103,14 @@ chooseBtn.addEventListener('click', async function () {
     localStorage.setItem('friendsSelectedCharacter', JSON.stringify(selected));
     statusText.textContent = `${selected.name} selected! Loading tutorial...`;
     setTimeout(() => {
+        AudioManager.saveMenuPosition();
         window.location.href = '/Game/tutorial.html';
     }, 500);
 });
 
 if (backToMenuBtn) {
     backToMenuBtn.addEventListener('click', () => {
+        AudioManager.saveMenuPosition();
         window.location.href = '/Game/index.html';
     });
 }

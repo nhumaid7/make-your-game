@@ -58,7 +58,7 @@ function resetGame() {
   updateDisplay();
   clearMovingArrows();
 
-  gameInstruction.textContent = 'Press SPACE to start the rhythm game!';
+  gameInstruction.textContent = 'Press Enter';
   gameStatus.textContent = `Ready to play! Best Score: ${loadBestScore()}`;
   gameStatus.className = 'game-status';
 
@@ -98,7 +98,7 @@ function startGame() {
   applyLevelSettings();
   updateDisplay();
 
-  gameInstruction.textContent = 'Press matching keys when arrows reach the green target!';
+  gameInstruction.textContent = 'Hit Arrows';
   gameStatus.textContent = `Game started. Best Score: ${loadBestScore()}`;
   gameStatus.className = 'game-status';
 
@@ -133,8 +133,8 @@ function gameOver() {
   setCharSad();
 
    const bestScore = saveBestScore();
-  gameInstruction.textContent = 'Game Over!';
-  gameStatus.textContent = `Final Score: ${gameState.score} | Best Score: ${bestScore}. Press SPACE to play again.`;
+  gameInstruction.textContent = 'Game Over';
+  gameStatus.textContent = `Final Score: ${gameState.score} | Best Score: ${bestScore}. Press ENTER to play again.`;
   gameStatus.className = 'game-status error';
 
   startBtn.disabled = false;

@@ -73,6 +73,7 @@ async function showCharacterChooserWithCurtain() {
     AudioManager.playMusic(MENU_MUSIC);
 
     await closeCurtains();
+    AudioManager.saveMenuPosition();
     window.location.href = '/Game/char.html';
     await openCurtains();
 }
@@ -81,6 +82,7 @@ async function showTutorialWithCurtain()   {
     AudioManager.playMusic(MENU_MUSIC);
 
     await closeCurtains();
+    AudioManager.saveMenuPosition();
     window.location.href = '/Game/tutorial.html';
     await openCurtains();
 } 

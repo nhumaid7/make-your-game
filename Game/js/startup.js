@@ -101,16 +101,31 @@ function loadSettings() {
 }
 // Add keyboard shortcut for Start
 window.addEventListener('keydown', (event) => {
-    if (event.code === 'Space' && gameScreen.style.display === 'flex') {
+    if ((event.code === 'Enter' || event.code === 'NumpadEnter') && gameScreen.style.display === 'flex') {
         event.preventDefault();
         if (startBtn.disabled === false) {
             startGame();
         }
     }
 
+    // Space bar also toggles pause/resume when a game is active
+    if (event.code === 'Space' && gameScreen.style.display === 'flex' && gameState.isPlaying) {
+        event.preventDefault();
+        togglePause();
+    }
+
     // P key toggles pause/resume when a game is active
     if ((event.key === 'p' || event.key === 'P') && gameScreen.style.display === 'flex') {
         if (gameState.isPlaying) togglePause();
+    }
+
+    // R key restarts the game from the pause menu
+    if ((event.key === 'r' || event.key === 'R') && gameScreen.style.display === 'flex' && gameState.gamePaused) {
+        event.preventDefault();
+        resetGame();
+        if (pauseOverlay) pauseOverlay.style.display = 'none';
+        AudioManager.stopMusic();
+        startGame();
     }
 });
 

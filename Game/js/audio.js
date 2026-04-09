@@ -10,6 +10,7 @@ const AudioManager = {
   gainNode: null, //controls the volume
   biquadFilter: null, //applies filter
   distortion: null, //create glitch
+  _menuResumeTime: parseFloat(localStorage.getItem('menuMusicTime')) || 0, //make the menu music resume where it left off when returning from tutorial or game
 
   initContext() {
     if (!this.audioContext) {
@@ -65,6 +66,14 @@ const AudioManager = {
     this.currentMusic = audio;
     this.currentSrc = src;
 
+      // If resuming menu music, set the currentTime after it can play
+    if (src === MENU_MUSIC && this._menuResumeTime > 0) {
+      const t = this._menuResumeTime;
+      this._menuResumeTime = 0;
+      localStorage.removeItem('menuMusicTime');
+      audio.addEventListener('canplay', () => { audio.currentTime = t; }, { once: true });
+    }
+
     this.sourceNode = this.audioContext.createMediaElementSource(audio);
     this.gainNode = this.audioContext.createGain();
     this.gainNode.gain.value = 0.5;
@@ -102,6 +111,8 @@ const AudioManager = {
     if (this.currentMusic) {
       this.currentMusic.pause();
       this.currentMusic.currentTime = 0;
+      // Clear saved menu position when stopping music
+      localStorage.removeItem('menuMusicTime');
     }
 
     if (this.sourceNode) this.sourceNode.disconnect();
@@ -115,6 +126,12 @@ const AudioManager = {
     this.gainNode = null;
     this.biquadFilter = null;
     this.distortion = null;
+  },
+  // Save the current position of the menu music when navigating away from the menu
+  saveMenuPosition() {
+    if (this.currentMusic && this.currentSrc === MENU_MUSIC) {
+      localStorage.setItem('menuMusicTime', this.currentMusic.currentTime);
+    }
   },
 
   glitchMusic(duration = 300) {
