@@ -102,16 +102,29 @@ chooseBtn.addEventListener('click', async function () {
     const selected = characters[current];
     localStorage.setItem('friendsSelectedCharacter', JSON.stringify(selected));
     statusText.textContent = `${selected.name} selected! Loading tutorial...`;
-    setTimeout(() => {
-        AudioManager.saveMenuPosition();
+
+    AudioManager.saveMenuPosition();
+
+    if (typeof closeCurtains === 'function') {
+        await closeCurtains();
         window.location.href = '/Game/tutorial.html';
-    }, 500);
+    } else {
+        setTimeout(() => {
+            window.location.href = '/Game/tutorial.html';
+        }, 500);
+    }
 });
 
 if (backToMenuBtn) {
-    backToMenuBtn.addEventListener('click', () => {
+    backToMenuBtn.addEventListener('click', async () => {
         AudioManager.saveMenuPosition();
-        window.location.href = '/Game/index.html';
+
+        if (typeof closeCurtains === 'function') {
+            await closeCurtains();
+            window.location.href = '/Game/index.html';
+        } else {
+            window.location.href = '/Game/index.html';
+        }
     });
 }
 

@@ -77,13 +77,15 @@ function consumeCurrent() {
 
         animating = false;
 
-        if (currentIndex >= sequence.length) {
-            // All done — navigate to game
-            tutHint.textContent = 'Great! Loading the game…';
-            setTimeout(() => {
-                window.location.href = '/Game/index.html?play=1';
-            }, 700);
+if (currentIndex >= sequence.length) {
+    tutHint.textContent = 'Great! Loading the game…';
+    setTimeout(async () => {
+        if (typeof closeCurtains === 'function') {
+            await closeCurtains();
         }
+        window.location.href = '/Game/index.html?play=1';
+    }, 700);
+}
     }, { once: true });
 }
 
@@ -113,9 +115,15 @@ window.addEventListener('keydown', (e) => {
 /* Back button */
 const backBtn = document.getElementById('backToMenuBtn');
 if (backBtn) {
-    backBtn.addEventListener('click', () => {
+    backBtn.addEventListener('click', async () => {
         AudioManager.saveMenuPosition();
-        window.location.href = '/Game/index.html';
+
+        if (typeof closeCurtains === 'function') {
+            await closeCurtains();
+            window.location.href = '/Game/index.html';
+        } else {
+            window.location.href = '/Game/index.html';
+        }
     });
 }
 

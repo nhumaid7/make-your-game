@@ -8,27 +8,38 @@
 </head>
 <body class="tutorial-page">
 
-    <button id="backToMenuBtn" class="back-to-menu-btn">← Back to Main Menu</button>
+    <!-- Curtain Transition Effect -->
+    <div class="curtain-overlay">
+        <div class="curtain-panel left open" id="curtainTop">
+            <div class="curtain-fold"></div>
+        </div>
+        <div class="curtain-panel right open" id="curtainBottom">
+            <div class="curtain-fold"></div>
+        </div>
+    </div>
 
-    <div class="tutorial-stage">
-        <div class="tutorial-panel">
-            <h1 class="tutorial-panel-title">How to Play</h1>
-            <p class="tutorial-panel-subtitle">Follow the sequence</p>
+    <div class="page-content" id="pageContent">
+        <button id="backToMenuBtn" class="back-to-menu-btn">← Back to Main Menu</button>
 
-            <!-- Sequence strip -->
-            <div class="tut-strip-wrapper">
-                <div class="tut-target-zone" id="tutTargetZone">
-                    <div class="tut-target-box"></div>
+        <div class="tutorial-stage">
+            <div class="tutorial-panel">
+                <h1 class="tutorial-panel-title">How to Play</h1>
+                <p class="tutorial-panel-subtitle">Follow the sequence</p>
+
+                <div class="tut-strip-wrapper">
+                    <div class="tut-target-zone" id="tutTargetZone">
+                        <div class="tut-target-box"></div>
+                    </div>
+                    <div class="tut-arrow-track" id="tutArrowTrack">
+                        <!-- arrows injected by JS -->
+                    </div>
                 </div>
-                <div class="tut-arrow-track" id="tutArrowTrack">
-                    <!-- arrows injected by JS -->
-                </div>
+
+                <p class="tut-hint" id="tutHint">Press the matching arrow key!</p>
             </div>
 
-            <p class="tut-hint" id="tutHint">Press the matching arrow key!</p>
+            <div class="tut-player-label">P1</div>
         </div>
-
-        <div class="tut-player-label">P1</div>
     </div>
 
     <script src="/Game/js/audio.js"></script>
