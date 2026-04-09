@@ -189,22 +189,25 @@ function applyLevelSettings() {
   gameState.level3TargetActive = false;
 
   if (gameState.currentLevel === 1) {
-    gameState.arrowSpeed = (gameState.baseSpeed);
-    gameState.currentSpawnInterval = gameState.baseSpawnInterval;
+    gameState.arrowSpeed = Math.max(2.2, gameState.baseSpeed * 0.9);
+    gameState.currentSpawnInterval = Math.max(100, gameState.baseSpawnInterval );
+    gameState.targetZoneSpeed = 0;
     applyDifficultyWindows();
   }
 
   if (gameState.currentLevel === 2) {
-  gameState.arrowSpeed = Math.round((gameState.baseSpeed * 1.5) * 100) / 100;
-    gameState.currentSpawnInterval = gameState.baseSpawnInterval;
+    gameState.arrowSpeed = Math.max(3, gameState.baseSpeed * 1.15);
+    gameState.currentSpawnInterval = Math.max(1000, gameState.baseSpawnInterval);
+    gameState.targetZoneSpeed = 0;
     applyDifficultyWindows();
   }
 
   if (gameState.currentLevel === 3) {
-  gameState.arrowSpeed = Math.round((gameState.baseSpeed * 1.5 ) * 100) / 100;
-    gameState.currentSpawnInterval = gameState.baseSpawnInterval;
+    gameState.arrowSpeed = Math.max(3.8, gameState.baseSpeed * 1.35);
+    gameState.currentSpawnInterval = Math.max(800, gameState.baseSpawnInterval - 150);
     gameState.level3TargetActive = true;
     gameState.targetZoneSpeed = 2.5;
+    applyDifficultyWindows();
   }
 }
 
@@ -254,7 +257,6 @@ function initRhythmGame() {
 function rhythmLoop(currentTime) {
   if (!gameState.isPlaying || gameState.gameOver) return;
 
-  // ✅ If paused, don't update anything, but keep requesting frames
   if (gameState.gamePaused) {
     gameState.animationFrame = requestAnimationFrame(rhythmLoop);
     return;
@@ -263,10 +265,6 @@ function rhythmLoop(currentTime) {
   if (currentTime - gameState.lastSpawnTime >= gameState.currentSpawnInterval) {
     spawnArrow();
     gameState.lastSpawnTime = currentTime;
-
-    const variation = 500;
-    gameState.currentSpawnInterval =
-      gameState.baseSpawnInterval + (Math.random() * variation * 2 - variation);
   }
 
   updateMovingTargetZone();
@@ -276,35 +274,41 @@ function rhythmLoop(currentTime) {
 
 // Get current target zone bounds (used for hit detection)
 function getTargetZoneBounds() {
+  const lane = sequenceDisplay || document.querySelector('.sequence-display');
   const targetZone = document.querySelector('.target-zone');
+  const targetBox = document.querySelector('.target-zone .target-box');
 
-  if (!targetZone) {
+  if (!lane || !targetZone) {
     return {
-      goodStart: gameState.goodZoneStart,
-      goodEnd: gameState.goodZoneEnd,
-      perfectStart: gameState.perfectZoneStart,
-      perfectEnd: gameState.perfectZoneEnd
+      goodStart: gameState.goodZoneStart ?? 0,
+      goodEnd: gameState.goodZoneEnd ?? 90,
+      perfectStart: gameState.perfectZoneStart ?? 0,
+      perfectEnd: gameState.perfectZoneEnd ?? 80
     };
   }
 
-  if (!gameState.level3TargetActive) {
-    return {
-      goodStart: gameState.goodZoneStart,
-      goodEnd: gameState.goodZoneEnd,
-      perfectStart: gameState.perfectZoneStart,
-      perfectEnd: gameState.perfectZoneEnd
-    };
-  }
+  const laneRect = lane.getBoundingClientRect();
+  const zoneRect = targetZone.getBoundingClientRect();
 
-  const left = gameState.targetZoneX;
-  const width = gameState.targetZoneWidth;
-  const perfectPadding = 0;
+  // GOOD zone = outer green box
+  const goodStart = zoneRect.left - laneRect.left;
+  const goodEnd = zoneRect.right - laneRect.left;
+
+  // PERFECT zone = inner dashed box
+  let perfectStart = goodStart;
+  let perfectEnd = goodEnd;
+
+  if (targetBox) {
+    const boxRect = targetBox.getBoundingClientRect();
+    perfectStart = boxRect.left - laneRect.left;
+    perfectEnd = boxRect.right - laneRect.left;
+  }
 
   return {
-    goodStart: left,
-    goodEnd: left + width,
-    perfectStart: left + perfectPadding,
-    perfectEnd: left + width - perfectPadding
+    goodStart,
+    goodEnd,
+    perfectStart,
+    perfectEnd
   };
 }
 
@@ -347,7 +351,16 @@ function startRhythmGame() {
 
 // Spawn arrow using images (your paths here)
 function spawnArrow() {
-  const directions = ['up', 'down', 'left', 'right'];
+  let directions;
+
+  if (gameState.currentLevel === 1) {
+    directions = ['up', 'down'];
+  } else if (gameState.currentLevel === 2) {
+    directions = ['up', 'down', 'left', 'right'];
+  } else {
+    directions = ['up', 'down', 'left', 'right'];
+  }
+
   const randomDirection = directions[Math.floor(Math.random() * directions.length)];
 
   const arrowImages = {
@@ -371,15 +384,16 @@ function spawnArrow() {
   arrowElement.appendChild(img);
 
   const displayWidth = sequenceDisplay.offsetWidth;
-  arrowElement.style.left = `${displayWidth - 100}px`;
+  const startX = displayWidth + 20;
 
+  arrowElement.style.left = `${startX}px`;
   sequenceDisplay.appendChild(arrowElement);
 
   gameState.activeArrows.push({
     id: arrowElement.dataset.id,
     element: arrowElement,
     direction: randomDirection,
-    left: displayWidth - 100,
+    left: startX,
     width: 60,
     isActive: true
   });
@@ -434,7 +448,10 @@ function updateArrowPositions() {
       setTimeout(() => arrow.element?.remove(), 300);
       gameState.activeArrows.splice(i, 1);
 
-      if (gameState.lives <= 0) gameOver();
+      if (gameState.lives <= 0) {
+        gameOver();
+        return;
+      }
     }
   }
 
@@ -457,24 +474,34 @@ function handleRhythmHit(direction) {
   const bounds = getTargetZoneBounds();
 
   const arrowsInZone = gameState.activeArrows.filter(a => {
-    const center = a.left + a.width / 2;
-    return center >= bounds.goodStart && center <= bounds.goodEnd;
+    const arrowLeft = a.left;
+    const arrowRight = a.left + a.width;
+
+    return arrowRight >= bounds.goodStart && arrowLeft <= bounds.goodEnd;
   });
 
   if (arrowsInZone.length === 0) {
     AudioManager.glitchMusic(250);
-
     showHitFeedback('TOO EARLY', '#ff9800', 100, 50);
     gameState.consecutiveHits = 0;
     setCharSad();
     return;
   }
 
-  let hitArrow = arrowsInZone.find(a =>
-    a.direction === direction && (a.left + a.width / 2) >= bounds.perfectStart
-  );
+  let hitArrow = arrowsInZone.find(a => {
+    const arrowLeft = a.left;
+    const arrowRight = a.left + a.width;
 
-  if (!hitArrow) hitArrow = arrowsInZone.find(a => a.direction === direction);
+    return (
+      a.direction === direction &&
+      arrowLeft >= bounds.perfectStart &&
+      arrowRight <= bounds.perfectEnd
+    );
+  });
+
+  if (!hitArrow) {
+    hitArrow = arrowsInZone.find(a => a.direction === direction);
+  }
 
   if (!hitArrow) {
     AudioManager.glitchMusic(250);
@@ -484,25 +511,25 @@ function handleRhythmHit(direction) {
     return;
   }
 
-const arrowLeft = hitArrow.left;
-const arrowRight = hitArrow.left + hitArrow.width;
+  const arrowLeft = hitArrow.left;
+  const arrowRight = hitArrow.left + hitArrow.width;
 
-let accuracy = 'good';
-let points = 50;
-let color = '#ffc107';
+  let accuracy = 'good';
+  let points = 50;
+  let color = '#ffc107';
 
-const isPerfect =
-  arrowLeft >= bounds.perfectStart &&
-  arrowRight <= bounds.perfectEnd;
+  const isPerfect =
+    arrowLeft >= bounds.perfectStart &&
+    arrowRight <= bounds.perfectEnd;
 
-if (isPerfect) {
-  accuracy = 'perfect';
-  points = 100;
-  color = '#4caf50';
-  gameState.consecutiveHits++;
-} else {
-  gameState.consecutiveHits = Math.max(0, gameState.consecutiveHits - 1);
-}
+  if (isPerfect) {
+    accuracy = 'perfect';
+    points = 100;
+    color = '#4caf50';
+    gameState.consecutiveHits++;
+  } else {
+    gameState.consecutiveHits = Math.max(0, gameState.consecutiveHits - 1);
+  }
 
   const combo = gameState.consecutiveHits;
   const totalPoints = points * (1 + combo * 0.1);
