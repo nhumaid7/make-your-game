@@ -10,16 +10,22 @@
 <body>
 
     <div class="game-hud" id="game-hud" style="display:none;">
-  <button class="back-btn" id="back-from-game">
-    <i class="fas fa-arrow-left"></i> Back to Main Menu
-  </button>
+      <button class="back-btn" id="back-from-game">
+        <i class="fas fa-arrow-left"></i> Back to Main Menu
+      </button>
 
-  <div class="stats">
-    <div class="stat">Level: <span id="level">1</span></div>
-    <div class="stat">Score: <span id="score">0</span></div>
-    <div class="stat">Lives: <span id="lives">3</span></div>
-  </div>
+      <div class="stats"> 
+        <div class="stat">Score: <span id="score">0</span></div>
+        <div class="stat">Level: <span id="level">1</span></div>
+        <div class="stat">Lives: <span id="lives">3</span></div>
+        <div class="stat">Time: <span id="timer">00:00</span></div>
+
+      </div>
+
+
 </div>
+
+
 
      <!-- Curtain Transition Effect -->
 <div class="curtain-overlay" id="curtainOverlay">
@@ -84,7 +90,12 @@
 </div>
         <p class="game-instruction" id="game-instruction">Press Enter</p>
 
-      <div class="game-controls top-right-controls">
+
+      
+
+      <!-- HUD text + start button -->
+      <div class="game-bottom-ui">
+        <div class="game-controls top-right-controls">
         <button class="control-btn" id="start-btn">
           <i class="fas fa-play-circle"></i> Start
         </button>
@@ -92,9 +103,6 @@
           <i class="fas fa-pause"></i> Pause
         </button>
       </div>
-
-      <!-- HUD text + start button -->
-      <div class="game-bottom-ui">
         <div class="game-status" id="game-status">Ready to play!</div>
       </div>
 
@@ -179,9 +187,10 @@
     <script src="/Game/js/navigation.js"></script>
     <script src="/Game/js/controls.js"></script>
     <script src="/Game/js/rules-core.js"></script>
-<script src="/Game/js/rules-levels.js"></script>
-<script src="/Game/js/rules-rhythm.js"></script>
-<script src="/Game/js/rules-pause.js"></script>
+    <script src="/Game/js/rules-levels.js"></script>
+    <script src="/Game/js/rules-rhythm.js"></script>
+    <script src="/Game/js/rules-pause.js"></script>
     <script src="/Game/js/startup.js"></script>
+    <script src="/Game/js/timer.js"></script>
 </body>
 </html>

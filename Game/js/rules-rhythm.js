@@ -207,6 +207,8 @@ function updateArrowPositions() {
       gameState.consecutiveHits = 0;
 
       gameState.lives = Math.max(0, gameState.lives - 1);
+          AudioManager.glitchMusic(250);
+
       updateDisplay();
 
       showHitFeedback('MISS', '#f44336', arrow.left, arrow.element.offsetTop);
