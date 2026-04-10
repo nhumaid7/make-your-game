@@ -46,6 +46,8 @@ function updateRunStatus(accuracyText = '') {
 function resetGame() {
   stopRhythmGame();
   initRhythmGame();
+  pauseTimer();
+
 
   gameState.currentLevel = 1;
   gameState.score = 0;
@@ -78,6 +80,7 @@ function resetGame() {
 
 function startGame() {
   AudioManager.playMusic(GAME_MUSIC);
+  startTimer();
 
   if (gameState.gameOver) {
     location.reload();
@@ -125,7 +128,7 @@ function gameOver() {
   stopRhythmGame();
 
   AudioManager.stopMusic();
-
+  stopTimer();
   gameState.isPlaying = false;
   gameState.gameOver = true;
   gameState.isPlayerTurn = false;
@@ -133,13 +136,41 @@ function gameOver() {
   setCharSad();
 
   const bestScore = saveBestScore();
-  gameInstruction.textContent = 'Game Over';
+  gameInstruction.textContent = 'You Lose';
   gameStatus.textContent = `Final Score: ${gameState.score} | Best Score: ${bestScore}. Press ENTER to play again.`;
   gameStatus.className = 'game-status error';
 
   startBtn.disabled = false;
 
   // ✅ pause disabled on game over
+  if (pauseBtn) {
+    pauseBtn.disabled = true;
+    pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+  }
+
+  arrowButtons.forEach(btn => (btn.disabled = true));
+}
+
+function gameWon() {
+  stopRhythmGame();
+
+  AudioManager.stopMusic();
+  stopTimer();
+
+  gameState.isPlaying = false;
+  gameState.gameOver = true;
+  gameState.isPlayerTurn = false;
+
+  setCharHappy();
+
+  const bestScore = saveBestScore();
+  gameInstruction.textContent = 'YOU WIN!';
+  gameStatus.textContent = `Congratulations! Final Score: ${gameState.score} | Best Score: ${bestScore}. Press ENTER to play again.`;
+  gameStatus.className = 'game-status success';
+
+  startBtn.disabled = false;
+
+  // ✅ pause disabled on game won
   if (pauseBtn) {
     pauseBtn.disabled = true;
     pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';

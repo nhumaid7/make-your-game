@@ -5,6 +5,8 @@ function applyDifficultyWindows() {
       gameState.perfectZoneEnd = 80;
       gameState.goodZoneStart = -12;
       gameState.goodZoneEnd = 92;
+
+
       break;
 
     case 2:
@@ -12,6 +14,8 @@ function applyDifficultyWindows() {
       gameState.perfectZoneEnd = 75;
       gameState.goodZoneStart = -8;
       gameState.goodZoneEnd = 88;
+
+
       break;
 
     case 3:
@@ -19,6 +23,8 @@ function applyDifficultyWindows() {
       gameState.perfectZoneEnd = 70;
       gameState.goodZoneStart = -5;
       gameState.goodZoneEnd = 85;
+      
+
       break;
 
     default:
@@ -50,7 +56,22 @@ function applyLevelSettings() {
     gameState.arrowSpeed = Math.max(3.8, gameState.baseSpeed * 1.35);
     gameState.currentSpawnInterval = Math.max(800, gameState.baseSpawnInterval - 150);
     gameState.level3TargetActive = true;
-    gameState.targetZoneSpeed = 2.5;
+    
+    // Set targetZoneSpeed based on difficulty
+    switch (gameState.baseDifficulty) {
+      case 1: // Easy
+        gameState.targetZoneSpeed = 0.2;
+        break;
+      case 2: // Medium
+        gameState.targetZoneSpeed = 0.5;
+        break;
+      case 3: // Hard
+        gameState.targetZoneSpeed = 1;
+        break;
+      default:
+        gameState.targetZoneSpeed = 0.2;
+    }
+    
     applyDifficultyWindows();
   }
 }
@@ -71,5 +92,11 @@ function checkLevelProgression() {
 
     gameStatus.textContent = `LEVEL ${gameState.currentLevel}!`;
     gameStatus.className = 'game-status success';
+  }
+}
+
+function checkWinCondition() {
+  if (gameState.score >= 3500) {
+    gameWon();
   }
 }

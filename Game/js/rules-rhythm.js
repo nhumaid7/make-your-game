@@ -93,8 +93,8 @@ function updateMovingTargetZone() {
     gameState.targetZoneDirection = 1;
   }
 
-  if (gameState.targetZoneX >= maxX) {
-    gameState.targetZoneX = maxX;
+  if (gameState.targetZoneX >= maxX/1.2) {
+    gameState.targetZoneX = maxX/1.2;
     gameState.targetZoneDirection = -1;
   }
 
@@ -207,6 +207,8 @@ function updateArrowPositions() {
       gameState.consecutiveHits = 0;
 
       gameState.lives = Math.max(0, gameState.lives - 1);
+          AudioManager.glitchMusic(250);
+
       updateDisplay();
 
       showHitFeedback('MISS', '#f44336', arrow.left, arrow.element.offsetTop);
@@ -303,6 +305,7 @@ function handleRhythmHit(direction) {
   gameState.score += Math.floor(totalPoints);
   updateDisplay();
   checkLevelProgression();
+  checkWinCondition();
 
   hitArrow.element.classList.add(`hit-${accuracy}`);
   showHitFeedback(

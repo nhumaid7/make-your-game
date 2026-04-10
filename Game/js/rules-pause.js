@@ -20,6 +20,7 @@ function pauseGame() {
 
   // pause music
   AudioManager.pauseMusic();
+  pauseTimer();
 
   gameInstruction.textContent = 'Paused';
   gameStatus.textContent = 'Game paused.';
@@ -42,6 +43,7 @@ function resumeGame() {
 
   // RESUME MUSIC HERE
   AudioManager.resumeMusic();
+  resumeTimer();
 
   gameInstruction.textContent = 'Resumed';
   gameStatus.textContent = 'Back in action!';
