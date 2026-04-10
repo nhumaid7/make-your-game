@@ -545,6 +545,7 @@ body.game-screen-active {
   border-radius: 10px;
   background: rgba(76, 175, 80, 0.15);
   transform: translateY(-50%);
+      /* margin-right: 300px; */
   z-index: 5;
   transition: left 0.05s linear, background 0.1s ease, box-shadow 0.1s ease, transform 0.1s ease;
 }

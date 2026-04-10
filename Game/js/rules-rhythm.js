@@ -303,6 +303,7 @@ function handleRhythmHit(direction) {
   gameState.score += Math.floor(totalPoints);
   updateDisplay();
   checkLevelProgression();
+  checkWinCondition();
 
   hitArrow.element.classList.add(`hit-${accuracy}`);
   showHitFeedback(

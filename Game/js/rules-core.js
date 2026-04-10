@@ -148,6 +148,33 @@ function gameOver() {
   arrowButtons.forEach(btn => (btn.disabled = true));
 }
 
+function gameWon() {
+  stopRhythmGame();
+
+  AudioManager.stopMusic();
+
+  gameState.isPlaying = false;
+  gameState.gameOver = true;
+  gameState.isPlayerTurn = false;
+
+  setCharHappy();
+
+  const bestScore = saveBestScore();
+  gameInstruction.textContent = 'YOU WIN!';
+  gameStatus.textContent = `Congratulations! Final Score: ${gameState.score} | Best Score: ${bestScore}. Press ENTER to play again.`;
+  gameStatus.className = 'game-status success';
+
+  startBtn.disabled = false;
+
+  // ✅ pause disabled on game won
+  if (pauseBtn) {
+    pauseBtn.disabled = true;
+    pauseBtn.innerHTML = '<i class="fas fa-pause"></i> Pause';
+  }
+
+  arrowButtons.forEach(btn => (btn.disabled = true));
+}
+
 function updateDisplay() {
   levelDisplay.textContent = gameState.currentLevel;
   scoreDisplay.textContent = gameState.score;
