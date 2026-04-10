@@ -93,8 +93,8 @@ function updateMovingTargetZone() {
     gameState.targetZoneDirection = 1;
   }
 
-  if (gameState.targetZoneX >= maxX) {
-    gameState.targetZoneX = maxX;
+  if (gameState.targetZoneX >= maxX/1.2) {
+    gameState.targetZoneX = maxX/1.2;
     gameState.targetZoneDirection = -1;
   }
 
