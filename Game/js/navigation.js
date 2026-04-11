@@ -89,55 +89,61 @@ async function showTutorialWithCurtain()   {
 
 // Screen navigation functions 
 function showMainMenu() {
-
     AudioManager.playMusic(MENU_MUSIC);
-
 
     const hud = document.getElementById('game-hud');
     if (hud) hud.style.display = 'none';
-       document.body.style.backgroundImage =
+
+    document.body.style.backgroundImage =
         "url('/Game/assets/images/menu amani.svg')";
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
     document.body.style.backgroundRepeat = "no-repeat";
     document.body.style.backgroundColor = "transparent";
 
+    const curtainOverlay = document.getElementById('curtainOverlay') || document.querySelector('.curtain-overlay');
+    if (curtainOverlay) {
+        curtainOverlay.style.display = 'flex';
+    }
 
-    stopRhythmGame(); // Ensure rhythm game is stopped when returning to main menu
+    stopRhythmGame();
     mainMenu.style.display = 'flex';
     gameScreen.style.display = 'none';
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'none';
 
-    // Remove keyboard focus from game screen
     window.removeEventListener('keydown', handleKeyPress);
 }
 
 function showGameScreen() {
+    AudioManager.stopMusic();
 
-    AudioManager.stopMusic()
     const hud = document.getElementById('game-hud');
     if (hud) hud.style.display = 'flex';
-    
-        document.body.style.backgroundImage =
+
+    document.body.style.backgroundImage =
         "url('/Game/assets/images/game.svg')";
     document.body.style.backgroundColor = "transparent";
     document.body.style.backgroundSize = "cover";
     document.body.style.backgroundPosition = "center";
     document.body.style.backgroundRepeat = "no-repeat";
 
-
     mainMenu.style.display = 'none';
     gameScreen.style.display = 'flex';
     optionsScreen.style.display = 'none';
     creditsScreen.style.display = 'none';
-   
 
     // Add keyboard listener when game screen is active
     window.addEventListener('keydown', handleKeyPress);
 
+    // Disable curtain overlay during gameplay
+    const curtainOverlay = document.getElementById('curtainOverlay') || document.querySelector('.curtain-overlay');
+    if (curtainOverlay) {
+        curtainOverlay.style.display = 'none';
+    }
+
     resetGame();
-    setCharNormal(); // Set normal character at start
+    setCharNormal();
 }
 
 function showOptionsScreen() {

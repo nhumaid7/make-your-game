@@ -502,13 +502,11 @@ body.game-screen-active {
 }
 
 .char[alt*="Happy"] {
-  transform: scale(1.1);
-  filter: drop-shadow(0 0 10px #4caf50);
+  transform: scale(1.05);
 }
 
 .char[alt*="Sad"] {
-  transform: scale(0.9);
-  filter: drop-shadow(0 0 10px #f44336);
+  transform: scale(0.95);
 }
 
 /* =========================
@@ -685,22 +683,14 @@ body.game-screen-active {
   z-index: 20;
   font-size: 1.5rem;
   font-weight: bold;
-  color: #4caf50;
   pointer-events: none;
-  animation: scoreFloat 1s ease-out forwards;
+  opacity: 0;
+  transform: translateY(0);
 }
 
-@keyframes scoreFloat {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
+.score-popup.show-feedback {
+  animation: scoreFloat 0.7s ease-out;
 }
-
 /* =========================
    GAME BOTTOM UI
 ========================= */

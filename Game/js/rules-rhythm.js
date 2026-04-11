@@ -207,11 +207,15 @@ function updateArrowPositions() {
       gameState.consecutiveHits = 0;
 
       gameState.lives = Math.max(0, gameState.lives - 1);
-          AudioManager.glitchMusic(250);
+      AudioManager.glitchMusic(250);
 
       updateDisplay();
 
-      showHitFeedback('MISS', '#f44336', arrow.left, arrow.element.offsetTop);
+      // use gameStatus instead of floating popup
+      gameStatus.textContent = 'MISS';
+      gameStatus.className = 'game-status error';
+
+      setCharSad();
 
       setTimeout(() => arrow.element?.remove(), 300);
       gameState.activeArrows.splice(i, 1);
@@ -250,9 +254,12 @@ function handleRhythmHit(direction) {
 
   if (arrowsInZone.length === 0) {
     AudioManager.glitchMusic(250);
-    showHitFeedback('TOO EARLY', '#ff9800', 100, 50);
     gameState.consecutiveHits = 0;
     setCharSad();
+
+    // use gameStatus instead of floating popup
+    gameStatus.textContent = 'TOO EARLY';
+    gameStatus.className = 'game-status error';
     return;
   }
 
@@ -273,9 +280,12 @@ function handleRhythmHit(direction) {
 
   if (!hitArrow) {
     AudioManager.glitchMusic(250);
-    showHitFeedback('WRONG KEY', '#f44336', 100, 50);
     gameState.consecutiveHits = 0;
     setCharSad();
+
+    // use gameStatus instead of floating popup
+    gameStatus.textContent = 'WRONG KEY';
+    gameStatus.className = 'game-status error';
     return;
   }
 
@@ -305,9 +315,10 @@ function handleRhythmHit(direction) {
   gameState.score += Math.floor(totalPoints);
   updateDisplay();
   checkLevelProgression();
-  checkWinCondition();
 
   hitArrow.element.classList.add(`hit-${accuracy}`);
+
+  // keep popup only for successful hits
   showHitFeedback(
     accuracy.toUpperCase(),
     color,
