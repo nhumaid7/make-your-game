@@ -20,7 +20,6 @@ function initRhythmGame() {
   gameState.consecutiveHits = 0;
 }
 
-// ✅ IMPORTANT: make the loop a top-level function so pause/resume can restart it
 function rhythmLoop(currentTime) {
   if (!gameState.isPlaying || gameState.gameOver) return;
 
